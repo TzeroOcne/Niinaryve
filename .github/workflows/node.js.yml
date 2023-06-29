@@ -8,6 +8,12 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+permissions:
+  actions: write
+  packages: write
+  repository-projects: write
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   build:
@@ -29,6 +35,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} npx semantic-release
     - run: npm run build --if-present
+    - run: npx semantic-release
     # - run: npm test
