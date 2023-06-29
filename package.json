@@ -1,7 +1,7 @@
 {
   "name": "Niinaryve",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.0-development",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,8 @@
     "build:extension": "vite build -c vite.config.cjs.ts",
     "build": "npm run build:app && npm run build:extension",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "semantic-release": "semantic-release"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.4",
@@ -31,5 +32,9 @@
     "eslint-plugin-svelte": "^2.31.0",
     "handlebars": "^4.7.7",
     "rollup": "^3.25.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TzeroOcne/Niinaryve.git"
   }
 }
