@@ -27,6 +27,7 @@
     "vite": "^4.3.9"
   },
   "dependencies": {
+    "@semantic-release/github": "^9.0.3",
     "@types/chrome": "^0.0.238",
     "colorette": "^2.0.20",
     "eslint-plugin-svelte": "^2.31.0",
