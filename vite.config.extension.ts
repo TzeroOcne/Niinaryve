@@ -10,23 +10,6 @@ export default defineConfig({
       manifest_version: 3,
       name: 'YT Chat Verifier',
       version: '0.0.1',
-      // background: {
-      //   service_worker: 'background.js',
-      // },
-      permissions: [
-        'scripting',
-        'activeTab',
-        'tabs',
-        'tabCapture',
-        'tabGroups',
-        'debugger',
-        'webRequest',
-        'webRequest',
-      ],
-      host_permissions: [
-        '*://*.youtube.com/*',
-        '*://localhost/*'
-      ],
       content_security_policy: {
         extension_pages: 'script-src \'self\' ; object-src \'self\';',
       },

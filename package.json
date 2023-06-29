@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build:app": "vite build",
-    "build:extension": "vite build -c vite.config.cjs.ts",
+    "build:extension": "vite build -c vite.config.extension.ts",
     "build": "npm run build:app && npm run build:extension",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
