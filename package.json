@@ -1,0 +1,34 @@
+{
+  "name": "Niinaryve",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build:app": "vite build",
+    "build:extension": "vite build -c vite.config.cjs.ts",
+    "build": "npm run build:app && npm run build:extension",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.0.4",
+    "@tsconfig/svelte": "^4.0.1",
+    "@types/node": "^20.3.1",
+    "@typescript-eslint/eslint-plugin": "^5.60.0",
+    "@typescript-eslint/parser": "^5.60.0",
+    "eslint": "^8.43.0",
+    "svelte": "^3.58.0",
+    "svelte-check": "^3.3.1",
+    "tslib": "^2.5.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.9"
+  },
+  "dependencies": {
+    "@types/chrome": "^0.0.238",
+    "colorette": "^2.0.20",
+    "eslint-plugin-svelte": "^2.31.0",
+    "handlebars": "^4.7.7",
+    "rollup": "^3.25.1"
+  }
+}

@@ -1,0 +1,13 @@
+document.addEventListener('DOMContentLoaded', async () => {
+  const container = document.createElement('div');
+  container.id = 'app';
+  console.log(document.body);
+  document.body.appendChild(container);
+  var s = document.createElement('script');
+  s.src = chrome.runtime.getURL('{{scriptPath}}');
+  s.crossOrigin = true;
+  s.type = 'module';
+  s.onload = function() { this.remove(); };
+  // see also "Dynamic values in the injected code" section in this answer
+  (document.head || document.documentElement).appendChild(s);
+});
