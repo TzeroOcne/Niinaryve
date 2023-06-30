@@ -33,5 +33,5 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
-    - run: npx semantic-release
+    - run: cd dist && npm run semantic-release
     # - run: npm test
