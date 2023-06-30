@@ -1,26 +1,8 @@
-function waitForElm(selector:string) {
-  return new Promise<Element>(resolve => {
-    if (document.querySelector(selector)) {
-      return resolve(document.querySelector(selector));
-    }
-
-    const observer = new MutationObserver(() => {
-      if (document.querySelector(selector)) {
-        resolve(document.querySelector(selector));
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  });
-}
+import { PREFIX, waitForElm } from './global';
 
 console.log('[YTChatVer] verfier loaded');
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log('[YTChatVer] waiting chat app');
+  console.log(`${PREFIX} waiting chat app`);
   const chatApp = await waitForElm('body > yt-live-chat-app');
   const chatDocument = chatApp.ownerDocument;
   const head = chatDocument.head || chatDocument.documentElement;

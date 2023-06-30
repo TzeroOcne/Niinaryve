@@ -5,7 +5,7 @@ import { writeFile } from 'fs/promises';
 import Handlebars from 'handlebars';
 import { resolve } from 'path';
 import type { NormalizedOutputOptions } from 'rollup';
-import { ManifestV3 } from '../@types/manifest';
+import type { ManifestV3 } from '../@types/manifest';
 import type { AssetInfo, ChunkInfo } from '../@types/rollup';
 import { generateManifest } from '../generator/manifest.generator';
 import { distFileColorLog } from '../logger';

@@ -9,6 +9,7 @@
     "vite.config.ts",
     "plugin/**/*.ts",
     "logger/**/*.ts",
-    "generator/**/*.ts"
+    "generator/**/*.ts",
+    "rollup.config.js"
   ]
 }

@@ -1,4 +1,4 @@
-import { Color } from 'colorette';
+import type { Color } from 'colorette';
 import { posix, relative, resolve, win32 } from 'path';
 
 export function distFileColorLog(dir: string, filepath: string, filename: string, color: Color) {

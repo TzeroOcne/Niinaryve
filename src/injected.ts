@@ -1,5 +1,5 @@
 import type { AuthorBadgeObject, AuthorSummary, LiveChatData } from '../@types/livechat';
-import { PREFIX } from './global';
+import { PREFIX, waitForElm } from './global';
 
 import './injected.css';
 
@@ -20,27 +20,6 @@ const isBadge = (badges:AuthorBadgeObject[] = [], regex:RegExp):boolean => {
 };
 const isMember = (badges:AuthorBadgeObject[] = []) => isBadge(badges, memberRegex);
 const isModerator = (badges:AuthorBadgeObject[] = []) => isBadge(badges, moderatorRegex);
-
-function waitForElm(selector:string, target?:Element) {
-  const usedTarget = target || document.body;
-  return new Promise<Element>(resolve => {
-    if (usedTarget.querySelector(selector)) {
-      return resolve(usedTarget.querySelector(selector));
-    }
-
-    const observer = new MutationObserver(() => {
-      if (usedTarget.querySelector(selector)) {
-        resolve(usedTarget.querySelector(selector));
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(usedTarget, {
-      childList: true,
-      subtree: true
-    });
-  });
-}
 
 const modifyNameDisplay = async (id:string, channelId:string, type?:'member'|'moderator'|'') => {
   const nameContainer = await waitForElm(`#${id} span#author-name:not(.ytc-marked)`);
@@ -79,7 +58,7 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
       return {authorName, authorExternalChannelId, id, authorBadges };
     }) ?? [];
   if (appContainer && type) {
-    console.log('[YTChatVer] Dispatching chat init event');
+    console.log(`${PREFIX} Dispatching chat init event`);
     appContainer.dispatchEvent(new CustomEvent('livechat', {detail: authorList}));
   }
   for (const { id, authorExternalChannelId, authorBadges } of authorList) {
