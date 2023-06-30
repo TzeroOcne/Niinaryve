@@ -3,7 +3,7 @@ export default {
     '@semantic-release/commit-analyzer',
     '@semantic-release/release-notes-generator',
     [
-      'semantic-release/git',
+      '@semantic-release/git',
       {
         assets: ['dist/**/*.{js,css}']
       }
