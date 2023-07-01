@@ -1,4 +1,4 @@
-import { type ManifestV3 } from '../@types/manifest';
+import type { ManifestV3 } from '../@types/manifest';
 export const DEFAULT_MANIFEST:ManifestV3 = {
   manifest_version: 3,
   name: '',

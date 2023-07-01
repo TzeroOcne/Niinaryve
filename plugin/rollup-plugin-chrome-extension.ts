@@ -1,8 +1,7 @@
 // rollup-plugin-content-script.ts
 
-import { cyan, cyanBright, redBright } from 'colorette';
+import { cyanBright, redBright } from 'colorette';
 import { writeFile } from 'fs/promises';
-import Handlebars from 'handlebars';
 import { resolve } from 'path';
 import type { NormalizedOutputOptions } from 'rollup';
 import type { ManifestV3 } from '../@types/manifest';
@@ -12,8 +11,6 @@ import { distFileColorLog } from '../logger';
 const MANIFEST_FILENAME = 'manifest.json';
 
 export default function chromeExtension(manifest: ManifestV3) {
-  console.log(cyan(`Handlebars v${Handlebars.VERSION}`));
-
   return {
     name: 'chrome-extension',
     async generateBundle({ dir }:NormalizedOutputOptions, bundle:{ [fileName: string]: AssetInfo | ChunkInfo }) {

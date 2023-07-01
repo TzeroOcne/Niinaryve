@@ -1,5 +1,17 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
+  "ts-node": {
+    "transpileOnly": true,
+    "experimentalResolver": true,
+    "experimentalSpecifierResolution": "node",
+    "logError": true,
+    "files": true,
+    "esm": true,
+    "require": ["tsconfig-paths/register"],
+    "compilerOptions": {
+      "typeRoots": ["./@types"],
+    },
+  },
   "compilerOptions": {
     "target": "ESNext",
     "useDefineForClassFields": true,
@@ -15,15 +27,18 @@
     "checkJs": true,
     "isolatedModules": true,
     "outDir": "dist",
+    "paths": {
+      "generator": ["./generator/*"],
+    },
     "esModuleInterop": false,
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "typeRoots": [
+      "./@types"
+    ]
   },
   "include": [
     "src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte",
   ],
-  "ts-node": {
-    "esm": true
-  },
   "references": [{ "path": "./tsconfig.node.json" }],
   "exclude": ["dist", "node_modules"]
 }

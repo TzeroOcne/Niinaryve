@@ -1,5 +1,8 @@
 import { PREFIX, waitForElm } from '../global';
 
+const injectedCSSUrl = 'https://cdn.jsdelivr.net/gh/TzeroOcne/Niinaryve/dist/runner/injected.css';
+const injectedJSUrl = 'https://cdn.jsdelivr.net/gh/TzeroOcne/Niinaryve/dist/runner/injected.js';
+
 console.log('[YTChatVer] verfier loaded');
 document.addEventListener('DOMContentLoaded', async () => {
   console.log(`${PREFIX} waiting chat app`);
@@ -25,12 +28,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   const injectedStyle = document.createElement('link');
   injectedStyle.rel = 'stylesheet';
-  injectedStyle.href = chrome.runtime.getURL('injected.css');
+  injectedStyle.href = injectedCSSUrl;
   head.appendChild(injectedStyle);
 
   const injectedScript = document.createElement('script');
-  injectedScript.src = chrome.runtime.getURL('injected.js');
+  injectedScript.src = injectedJSUrl;
   injectedScript.type = 'module';
-  injectedScript.setAttribute('extension_origin', chrome.runtime.getURL(''));
+  injectedScript.setAttribute('extension_origin', injectedJSUrl);
   head.appendChild(injectedScript);
 });

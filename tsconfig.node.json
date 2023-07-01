@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "composite": true,
-    "skipLibCheck": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler"
+    // "skipLibCheck": true,
+    // "module": "ESNext",
+    // "moduleResolution": "bundler"
   },
   "include": [
     "build.ts",
@@ -11,6 +11,5 @@
     "plugin/**/*.ts",
     "logger/**/*.ts",
     "generator/**/*.ts",
-    "rollup.config.js"
   ]
 }
