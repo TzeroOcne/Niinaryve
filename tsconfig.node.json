@@ -6,6 +6,7 @@
     "moduleResolution": "bundler"
   },
   "include": [
+    "build.ts",
     "vite.config.ts",
     "plugin/**/*.ts",
     "logger/**/*.ts",

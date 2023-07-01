@@ -1,5 +1,5 @@
 <script lang="ts" type="module">
-  import type { AuthorSummary } from '../@types/livechat';
+  import type { AuthorSummary } from '../../@types/livechat';
   import Bar from './lib/Bar.svelte';
   import { authorStore } from './lib/app.store';
   let show = true;

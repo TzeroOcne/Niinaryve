@@ -1,10 +1,25 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { build, defineConfig } from 'vite';
+import type { EntryOptions } from './@types/entry';
 
-const entryFile = [
-  ['main', 'src/main.ts'],
-  ['content-script', 'src/content-script.ts'],
-  ['injected', 'src/injected.ts'],
+const entryFile:EntryOptions[] = [
+  {
+    name: 'main',
+    path: 'src/app/app.ts',
+    empty: true
+  },
+  {
+    name: 'content-script',
+    path: 'src/extension/content-script.ts',
+    dir: 'dist/extension',
+    empty: true
+  },
+  {
+    name: 'injected',
+    path: 'src/runner/injected.ts',
+    dir: 'dist/runner',
+    empty: true
+  },
 ];
 
 const defaultConfig = defineConfig({
@@ -14,14 +29,14 @@ const defaultConfig = defineConfig({
 });
 
 async function buildPackages () {
-  for (const index in entryFile) {
-    const [ name, path ] = entryFile[index];
+  for (const { name, path, dir, empty } of entryFile) {
     await build({
       ...defaultConfig,
       publicDir: false,
       configFile: false,
       build: {
-        emptyOutDir: index === 0,
+        emptyOutDir: empty ?? false,
+        outDir: dir ?? 'dist/app',
         rollupOptions: {
           input: {
             [name]: path,

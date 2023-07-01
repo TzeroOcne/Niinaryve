@@ -1,4 +1,4 @@
-import { PREFIX, waitForElm } from './global';
+import { PREFIX, waitForElm } from '../global';
 
 console.log('[YTChatVer] verfier loaded');
 document.addEventListener('DOMContentLoaded', async () => {
