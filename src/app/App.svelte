@@ -1,10 +1,12 @@
 <script lang="ts" type="module">
+  import { faXmark } from '@fortawesome/free-solid-svg-icons';
+  import Fa from 'svelte-fa';
   import type { AuthorSummary } from '../../@types/livechat';
-  import Bar from './lib/Bar.svelte';
+  import { APP_ID } from '../global';
   import { authorStore } from './lib/app.store';
   let show = true;
   const appContainer = document.querySelector(
-    'div#ytclinker'
+    `div#${APP_ID}`
   ) as HTMLDivElement;
   const hideMenu = () => {
     show = false;
@@ -25,16 +27,11 @@
 
 <main>
   {#if show}
-    <div>Svelte Test App</div>
     <button on:click={hideMenu}>
-      <Bar />
+      <Fa icon={faXmark} />
     </button>
   {/if}
 </main>
 
 <style>
-  div {
-    color: #ff00ff;
-    background-color: inherit;
-  }
 </style>

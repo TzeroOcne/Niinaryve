@@ -4,7 +4,7 @@
   "version": "0.0.0-development",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node --loader ts-node/esm src/main.ts",
     "build:app": "vite build",
     "build:extension": "vite build -c vite.config.extension.ts",
     "build": "node --loader ts-node/esm build.ts",
