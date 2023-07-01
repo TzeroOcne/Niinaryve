@@ -9,15 +9,14 @@ export default {
       }
     ],
     // '@semantic-release/npm',
-    // [
-    //   '@semantic-release/github',
-    //   {
-    //     assets: [
-    //       { path: 'dist/main.css', label: 'App CSS distribution' },
-    //       { path: 'dist/main.js', label: 'App JS distribution' }
-    //     ]
-    //   }
-    // ]
+    [
+      '@semantic-release/github',
+      {
+        assets: [
+          { path: 'dist/extension/**/*', label: 'Extension distribution' },
+        ]
+      }
+    ]
   ],
-  branches: 'main',
+  branches: 'release',
 };
