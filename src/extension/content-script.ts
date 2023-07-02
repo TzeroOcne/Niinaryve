@@ -1,7 +1,9 @@
 import { APP_ID, PREFIX, waitForElm } from '../global';
 
-const injectedCSSUrl = 'https://cdn.jsdelivr.net/gh/TzeroOcne/Niinaryve/dist/runner/injected.css';
-const injectedJSUrl = 'https://cdn.jsdelivr.net/gh/TzeroOcne/Niinaryve/dist/runner/injected.js';
+const injectedCSSUrl = 'https://cdn.jsdelivr.net/gh/TzeroOcne/Niinaryve@latest/dist/runner/injected.css';
+const injectedJSUrl = 'https://cdn.jsdelivr.net/gh/TzeroOcne/Niinaryve@latest/dist/runner/injected.js';
+const openCSSUrl = 'https://cdn.jsdelivr.net/gh/TzeroOcne/Niinaryve@latest/dist/app/open.css';
+const openJSUrl = 'https://cdn.jsdelivr.net/gh/TzeroOcne/Niinaryve@latest/dist/app/open.js';
 
 console.log('[YTChatVer] verfier loaded');
 document.addEventListener('DOMContentLoaded', async () => {
@@ -15,10 +17,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   appContainer.classList.add('hide');
   chatApp.appendChild(appContainer);
 
-  waitForElm('yt-live-chat-button', chatApp).then((buttonMenu) => {
+  waitForElm('yt-live-chat-button', chatApp).then(async (buttonMenu:HTMLElement) => {
     const openButton = document.createElement('div') as HTMLDivElement;
     openButton.id = 'nnryv-open';
     buttonMenu.prepend(openButton);
+    
+    const openStyle = document.createElement('link') as HTMLLinkElement;
+    openStyle.rel = 'stylesjeet';
+    openStyle.href = openCSSUrl;
+    head.appendChild(openStyle);
+    
+    const openScript = document.createElement('script') as HTMLScriptElement;
+    openScript.src = openJSUrl;
+    openScript.type = 'module';
+    openScript.setAttribute('extension_origin', openJSUrl);
+    head.appendChild(openScript);
   });
 
   // const appScript = document.createElement('script');
