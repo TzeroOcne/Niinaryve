@@ -3,13 +3,11 @@
     "composite": true,
     // "skipLibCheck": true,
     // "module": "ESNext",
-    // "moduleResolution": "bundler"
+    // "moduleResolution": "NodeNext"
   },
   "include": [
-    "build.ts",
     "vite.config.ts",
-    "plugin/**/*.ts",
-    "logger/**/*.ts",
     "generator/**/*.ts",
+    "logger/**/*.ts",
   ]
 }

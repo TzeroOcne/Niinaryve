@@ -1,5 +1,5 @@
-import type { AuthorBadgeObject, AuthorSummary, LiveChatData } from '../../@types/livechat';
-import { APP_ID, PREFIX, waitForElm } from '../global';
+import { APP_ID, PREFIX, waitForElm } from '@global';
+import type { AuthorBadgeObject, AuthorSummary, LiveChatData } from '@types';
 
 import './injected.css';
 

@@ -1,8 +1,8 @@
 <script lang="ts" type="module">
   import { faXmark } from '@fortawesome/free-solid-svg-icons';
+  import { APP_ID } from '@global';
+  import type { AuthorSummary } from '@types';
   import Fa from 'svelte-fa';
-  import type { AuthorSummary } from '../../@types/livechat';
-  import { APP_ID } from '../global';
   import { authorStore } from './lib/app.store';
   let show = true;
   const appContainer = document.querySelector(

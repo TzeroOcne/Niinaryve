@@ -1,4 +1,4 @@
-import { APP_ID } from '../global';
+import { APP_ID } from '@global';
 import App from './App.svelte';
 import './app.css';
 

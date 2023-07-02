@@ -1,8 +1,9 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import type { EntryOptions } from '@types';
 import { writeFile } from 'fs/promises';
-import { resolve } from 'path';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
 import { build, defineConfig } from 'vite';
-import type { EntryOptions } from './@types/entry';
 import { generateManifest } from './generator';
 
 const youtubeLivechatURLPattern = 'https://*.youtube.com/*';
@@ -11,6 +12,7 @@ const youtubeURLPattern = 'https://*.youtube.com/*';
 
 const exntensionDir = resolve('src', 'extension');
 const manifestPath = resolve('dist', 'extension', 'manifest.json');
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const entryFile:EntryOptions[] = [
   {
@@ -37,6 +39,14 @@ const entryFile:EntryOptions[] = [
 ];
 
 const defaultConfig = defineConfig({
+  resolve: {
+    alias: [
+      {
+        find: '@global',
+        replacement: resolve(__dirname, 'src', 'global'),
+      }
+    ],
+  },
   plugins: [
     svelte(),
   ],
