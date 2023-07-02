@@ -5,7 +5,10 @@ export default {
     [
       '@semantic-release/git',
       {
-        assets: ['dist/**/*.{js,css}']
+        assets: [
+          'dist/**/*.{js,css}',
+          '!dist/archive/**/*',
+        ]
       }
     ],
     // '@semantic-release/npm',
@@ -13,7 +16,7 @@ export default {
       '@semantic-release/github',
       {
         assets: [
-          { path: 'dist/extension/**/*', label: 'Extension distribution' },
+          { path: 'dist/archive/chrome-extension.zip', label: 'Chrome Extension' },
         ]
       }
     ]

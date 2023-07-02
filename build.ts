@@ -14,9 +14,13 @@ const manifestPath = resolve('dist', 'extension', 'manifest.json');
 
 const entryFile:EntryOptions[] = [
   {
-    name: 'main',
+    name: 'app',
     path: 'src/app/app.ts',
     empty: true
+  },
+  {
+    name: 'open',
+    path: 'src/app/open.ts',
   },
   {
     name: 'content-script',

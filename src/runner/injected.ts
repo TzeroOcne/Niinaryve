@@ -1,5 +1,5 @@
 import type { AuthorBadgeObject, AuthorSummary, LiveChatData } from '../../@types/livechat';
-import { PREFIX, waitForElm } from '../global';
+import { APP_ID, PREFIX, waitForElm } from '../global';
 
 import './injected.css';
 
@@ -70,7 +70,7 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
 };
 
 (async () => {
-  appContainer = await waitForElm('div#ytclinker') as HTMLDivElement;
+  appContainer = await waitForElm(`div#${APP_ID}`) as HTMLDivElement;
   console.log(`${PREFIX} Modify Init`);
   waitForElm('body>script:not([src])').then(async (scriptElement:HTMLScriptElement) => {
     const initialText = scriptElement.text;
@@ -95,9 +95,7 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
 
   console.log(`${PREFIX} Injecting fetch Capture`);
   
-  window.fetch = async (...args) => {
-    const [resource, config ] = args;
-
+  window.fetch = async (resource, config) => {
     const response = await originalFetch(resource, config);
     if (resource instanceof Request &&
       resource.method === 'POST' &&

@@ -1,4 +1,4 @@
-import { PREFIX, waitForElm } from '../global';
+import { APP_ID, PREFIX, waitForElm } from '../global';
 
 const injectedCSSUrl = 'https://cdn.jsdelivr.net/gh/TzeroOcne/Niinaryve/dist/runner/injected.css';
 const injectedJSUrl = 'https://cdn.jsdelivr.net/gh/TzeroOcne/Niinaryve/dist/runner/injected.js';
@@ -10,10 +10,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   const chatDocument = chatApp.ownerDocument;
   const head = chatDocument.head || chatDocument.documentElement;
   
-  const container = document.createElement('div');
-  container.id = 'ytclinker';
-  container.classList.add('hide');
-  chatApp.appendChild(container);
+  const appContainer = document.createElement('div');
+  appContainer.id = APP_ID;
+  appContainer.classList.add('hide');
+  chatApp.appendChild(appContainer);
+
+  waitForElm('yt-live-chat-button', chatApp).then((buttonMenu) => {
+    const openButton = document.createElement('div') as HTMLDivElement;
+    openButton.id = 'nnryv-open';
+    buttonMenu.prepend(openButton);
+  });
 
   // const appScript = document.createElement('script');
   // appScript.src = chrome.runtime.getURL('main.js');
