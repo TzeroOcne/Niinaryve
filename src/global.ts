@@ -3,20 +3,21 @@ import { magentaBright } from 'colorette';
 export const PREFIX = `[${magentaBright('YTChatVer')}]`;
 export const APP_ID = 'nnryv-app';
 
-export function waitForElm(selector:string) {
+export function waitForElm(selector:string, parentTarget?:Element) {
+  const target = parentTarget ?? document.body;
   return new Promise<Element>(resolve => {
-    if (document.querySelector(selector)) {
-      return resolve(document.querySelector(selector));
+    if (target.querySelector(selector)) {
+      return resolve(target.querySelector(selector));
     }
 
     const observer = new MutationObserver(() => {
-      if (document.querySelector(selector)) {
-        resolve(document.querySelector(selector));
+      if (target.querySelector(selector)) {
+        resolve(target.querySelector(selector));
         observer.disconnect();
       }
     });
 
-    observer.observe(document.body, {
+    observer.observe(target, {
       childList: true,
       subtree: true
     });
