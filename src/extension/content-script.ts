@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     buttonMenu.prepend(openButton);
     
     const openStyle = document.createElement('link') as HTMLLinkElement;
-    openStyle.rel = 'stylesjeet';
+    openStyle.rel = 'stylesheet';
     openStyle.href = openCSSUrl;
     head.appendChild(openStyle);
     
