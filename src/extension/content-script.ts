@@ -1,12 +1,23 @@
-import { APP_ID, PREFIX, waitForElm } from '../global';
+import { APP_ID, PREFIX, waitForElm } from '@global';
+import type { TagArray } from '@types';
 
-const injectedCSSUrl = 'https://cdn.jsdelivr.net/gh/TzeroOcne/Niinaryve@latest/dist/runner/injected.css';
-const injectedJSUrl = 'https://cdn.jsdelivr.net/gh/TzeroOcne/Niinaryve@latest/dist/runner/injected.js';
-const openCSSUrl = 'https://cdn.jsdelivr.net/gh/TzeroOcne/Niinaryve@latest/dist/app/open.css';
-const openJSUrl = 'https://cdn.jsdelivr.net/gh/TzeroOcne/Niinaryve@latest/dist/app/open.js';
+const fileUrl = (name:string, folder: 'runner' | 'app', type: 'css' | 'js', version:string) =>
+  `https://cdn.jsdelivr.net/gh/TzeroOcne/Niinaryve@${version}/dist/${folder}/${name}.${type}`;
+const getTagUrl = 'https://api.github.com/repos/TzeroOcne/Niinaryve/tags?per_page=1';
 
 console.log('[YTChatVer] verfier loaded');
 document.addEventListener('DOMContentLoaded', async () => {
+  const tagList:TagArray = await (await fetch(getTagUrl)).json();
+  if (tagList.length === 0) {
+    throw Error('cannot found latest tag');
+  }
+  const [{ name:latestTagName }] = tagList;
+  
+  const injectedCSSUrl = fileUrl('injected', 'runner', 'css', latestTagName);
+  const injectedJSUrl = fileUrl('injected', 'runner', 'js', latestTagName);
+  const openCSSUrl = fileUrl('open', 'app', 'css', latestTagName);
+  const openJSUrl = fileUrl('open', 'app', 'js', latestTagName);
+
   console.log(`${PREFIX} waiting chat app`);
   const chatApp = await waitForElm('body > yt-live-chat-app');
   const chatDocument = chatApp.ownerDocument;
