@@ -1,8 +1,11 @@
 <script lang="ts">
   import { faBars } from '@fortawesome/free-solid-svg-icons';
   import Fa from 'svelte-fa';
+  let show = true;
 </script>
 
 <div>
-  <Fa icon={faBars} />
+  {#if show}
+    <Fa icon={faBars} />
+  {/if}
 </div>
