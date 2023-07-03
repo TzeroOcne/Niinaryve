@@ -1,5 +1,6 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import type { EntryOptions } from '@types';
+import { copy } from 'fs-extra';
 import { writeFile } from 'fs/promises';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
@@ -9,10 +10,18 @@ import { generateManifest } from './generator';
 const youtubeLivechatURLPattern = 'https://*.youtube.com/*';
 const youtubeURLPattern = 'https://*.youtube.com/*';
 
+const iconName = (size:16 | 32 | 48 | 128) => `icons/stripe-white-lined-boxed-${size}.png`;
 
-const exntensionDir = resolve('src', 'extension');
-const manifestPath = resolve('dist', 'extension', 'manifest.json');
+const extensionSrcDir = resolve('src', 'extension');
+const extensionDir = resolve('dist', 'extension');
+const manifestPath = resolve(extensionDir, 'manifest.json');
+const iconAssetDir = resolve('assets', 'icons');
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const extensionDescription = '\
+Enhance livestream chat experience. Automatically link youtube live chat username with \
+their channel link.\
+';
 
 const entryFile:EntryOptions[] = [
   {
@@ -26,7 +35,7 @@ const entryFile:EntryOptions[] = [
   },
   {
     name: 'content-script',
-    path: resolve(exntensionDir, 'content-script.ts'),
+    path: resolve(extensionSrcDir, 'content-script.ts'),
     dir: 'dist/extension',
     empty: true
   },
@@ -74,10 +83,19 @@ async function buildPackages () {
     });
   }
   
+  await copy(iconAssetDir, resolve(extensionDir, 'icons'));
+  
   await writeFile(manifestPath, generateManifest({
     manifest_version: 3,
-    name: 'YT Chat Verifier',
-    version: '0.0.1',
+    name: 'Niinaryve',
+    version: '1.0.0',
+    icons: {
+      '16': iconName(16),
+      '32': iconName(32),
+      '48': iconName(48),
+      '128': iconName(128),
+    },
+    description: extensionDescription,
     content_security_policy: {
       extension_pages: 'script-src \'self\' ; object-src \'self\';',
     },
@@ -104,7 +122,7 @@ async function buildPackages () {
           youtubeURLPattern
         ]
       }
-    ]
+    ],
   }));
 }
 

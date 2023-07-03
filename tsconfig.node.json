@@ -7,7 +7,7 @@
   },
   "include": [
     "vite.config.ts",
-    "generator/**/*.ts",
+    // "generator/**/*.ts",
     "logger/**/*.ts",
   ]
 }
