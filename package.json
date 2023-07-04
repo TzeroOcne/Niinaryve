@@ -7,6 +7,7 @@
     "dev": "node --loader ts-node/esm src/main.ts",
     "build:app": "vite build",
     "build:extension": "vite build -c vite.config.extension.ts",
+    "build:local": "node --loader ts-node/esm build.local.ts",
     "build": "node --loader ts-node/esm build.ts",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
@@ -34,8 +35,10 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@semantic-release/github": "^9.0.3",
     "@types/chrome": "^0.0.238",
+    "@types/fs-extra": "^11.0.1",
     "colorette": "^2.0.20",
     "eslint-plugin-svelte": "^2.31.0",
+    "fs-extra": "^11.1.1",
     "rollup": "^3.25.1",
     "svelte-fa": "^3.0.4"
   },

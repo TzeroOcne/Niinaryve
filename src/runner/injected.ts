@@ -1,5 +1,5 @@
 import { APP_ID, PREFIX, waitForElm } from '@global';
-import type { AuthorBadgeObject, AuthorSummary, LiveChatData } from '@types';
+import type { Actions, AuthorBadgeObject, AuthorSummary, LiveChatData, ReplayChatItemAction } from '@types';
 
 import './injected.css';
 
@@ -44,11 +44,23 @@ const modifyNameDisplay = async (id:string, channelId:string, type?:'member'|'mo
   nameContainer.appendChild(coloredName);
 };
 
+const replayReducer = (prev: Actions[], curr:Actions|ReplayChatItemAction) => {
+  const { actions } = curr as ReplayChatItemAction;
+  if (actions) {
+    return prev.concat(...actions);
+  }
+  return prev.concat(curr as Actions);
+};
+
 const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
   const content = liveChatData?.contents?.liveChatRenderer ?? liveChatData?.continuationContents?.liveChatContinuation;
   if (!content) return;
   const { actions } = content;
-  const authorList:AuthorSummary[] = actions?.map(({ addChatItemAction }) => addChatItemAction?.item?.liveChatTextMessageRenderer)
+  const actionTarget = actions.map((currentAction) =>
+    currentAction.replayChatItemAction ? currentAction.replayChatItemAction : currentAction)
+    .reduce(replayReducer, []);
+  const authorList:AuthorSummary[] = (actionTarget ?? [])
+    .map(({ addChatItemAction }) => addChatItemAction?.item?.liveChatTextMessageRenderer)
     .filter(val => val)
     .map(renderer => {
       const {
@@ -56,7 +68,7 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
         authorPhoto,
       } = renderer;
       return {authorName, authorExternalChannelId, id, authorBadges };
-    }) ?? [];
+    });
   if (appContainer && type) {
     console.log(`${PREFIX} Dispatching chat init event`);
     appContainer.dispatchEvent(new CustomEvent('livechat', {detail: authorList}));

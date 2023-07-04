@@ -127,11 +127,17 @@ export interface Continuation {
 
 export interface Actions {
   addChatItemAction?: AddChatItemAction;
+  replayChatItemAction?: ReplayChatItemAction;
 }
 
 export interface LiveChatContinuation {
   continuations?: Continuation[];
   actions?: Actions[];
+}
+
+export interface ReplayChatItemAction {
+  actions?: Actions[];
+  videoOffsetTimeMsec: unknown;
 }
 
 export interface ContinuationContents {

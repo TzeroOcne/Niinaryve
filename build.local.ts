@@ -1,6 +1,5 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import type { EntryOptions } from '@types';
-import { copy } from 'fs-extra';
 import { writeFile } from 'fs/promises';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
@@ -10,40 +9,30 @@ import { generateManifest } from './generator';
 const youtubeLivechatURLPattern = 'https://*.youtube.com/*';
 const youtubeURLPattern = 'https://*.youtube.com/*';
 
-const iconName = (size:16 | 32 | 48 | 128) => `icons/stripe-white-lined-boxed-${size}.png`;
-
-const extensionSrcDir = resolve('src', 'extension');
-const extensionDir = resolve('dist', 'extension');
-const manifestPath = resolve(extensionDir, 'manifest.json');
-const iconAssetDir = resolve('assets', 'icons');
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const extensionDescription = '\
-Enhance livestream chat experience. Automatically link youtube live chat username with \
-their channel link.\
-';
 
 const entryFile:EntryOptions[] = [
   {
+    name: 'content-script',
+    path: 'src/extension/content-script.local.ts',
+    empty: true,
+  },
+  {
     name: 'app',
     path: 'src/app/app.ts',
+    dir: 'dist/app',
     empty: true
   },
   {
     name: 'open',
     path: 'src/app/open.ts',
-  },
-  {
-    name: 'content-script',
-    path: resolve(extensionSrcDir, 'content-script.ts'),
-    dir: 'dist/extension',
-    empty: true
+    dir: 'dist/app',
   },
   {
     name: 'injected',
     path: 'src/runner/injected.ts',
     dir: 'dist/runner',
-    empty: true
+    empty: true,
   },
 ];
 
@@ -69,7 +58,7 @@ async function buildPackages () {
       configFile: false,
       build: {
         emptyOutDir: empty ?? false,
-        outDir: dir ?? 'dist/app',
+        outDir: dir ?? 'dist',
         rollupOptions: {
           input: {
             [name]: path,
@@ -83,22 +72,11 @@ async function buildPackages () {
     });
   }
   
-  await copy(iconAssetDir, resolve(extensionDir, 'icons'));
-  
-  await writeFile(manifestPath, generateManifest({
+  await writeFile('dist/manifest.json', generateManifest({
     manifest_version: 3,
-    name: 'Niinaryve',
+    name: 'Niinaryve-alpha',
     version: '1.0.0',
-    icons: {
-      '16': iconName(16),
-      '32': iconName(32),
-      '48': iconName(48),
-      '128': iconName(128),
-    },
-    description: extensionDescription,
-    content_security_policy: {
-      extension_pages: 'script-src \'self\' ; object-src \'self\';',
-    },
+    version_name: '1.0.0 alpha',
     content_scripts: [
       {
         run_at: 'document_start',
@@ -114,9 +92,8 @@ async function buildPackages () {
     web_accessible_resources: [
       {
         resources: [
-          'main.js',
-          'injected.js',
-          'main.css',
+          '*/*.js',
+          '*/*.css',
         ],
         matches: [
           youtubeURLPattern
