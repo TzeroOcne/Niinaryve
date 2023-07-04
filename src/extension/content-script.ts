@@ -13,8 +13,9 @@ export default ({
   openJSUrl,
 }:YouTubeScriptConfig) => {
   document.addEventListener('DOMContentLoaded', async () => {
-    console.log(`${PREFIX} waiting chat app`);
+    console.log(`${PREFIX} Waiting chat app`);
     const chatApp = await waitForElm('body > yt-live-chat-app');
+    console.log(`${PREFIX} Chat app found`);
     const chatDocument = chatApp.ownerDocument;
     const head = chatDocument.head || chatDocument.documentElement;
   
@@ -56,5 +57,7 @@ export default ({
     injectedScript.setAttribute('extension_origin', injectedJSUrl);
     addIdentifier(injectedScript);
     head.appendChild(injectedScript);
+
+    console.log(`${PREFIX} Done injecting script`);
   });
 };

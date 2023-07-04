@@ -8,15 +8,15 @@ div#nnryv-app.hide {
   display: none;
 }
 
-.ytc-verifier a {
+.nnryv-verifier a {
   text-decoration: none;
   color: aquamarine;
 }
 
-.ytc-verifier.moderator a {
+.nnryv-verifier.moderator a {
   color: var(--yt-live-chat-moderator-color,#5e84f1);
 }
 
-.ytc-verifier.member a {
+.nnryv-verifier.member a {
   color: var(--yt-live-chat-sponsor-color);
 }

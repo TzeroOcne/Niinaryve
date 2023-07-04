@@ -1,5 +1,5 @@
 import { APP_ID, PREFIX, waitForElm } from '@global';
-import type { Actions, AuthorBadgeObject, AuthorSummary, LiveChatData, ReplayChatItemAction } from '@types';
+import type { Actions, AuthorBadgeObject, AuthorSummary, BadgeType, LiveChatData, ReplayChatItemAction } from '@types';
 
 import './injected.css';
 
@@ -7,6 +7,7 @@ const { fetch: originalFetch } = window;
 let appContainer:HTMLDivElement;
 const memberRegex = /member/i;
 const moderatorRegex = /moderator/i;
+const verfiedRegex = /verified/i;
 const isBadge = (badges:AuthorBadgeObject[] = [], regex:RegExp):boolean => {
   if (badges.length === 0) {
     return false;
@@ -20,23 +21,26 @@ const isBadge = (badges:AuthorBadgeObject[] = [], regex:RegExp):boolean => {
 };
 const isMember = (badges:AuthorBadgeObject[] = []) => isBadge(badges, memberRegex);
 const isModerator = (badges:AuthorBadgeObject[] = []) => isBadge(badges, moderatorRegex);
+const isVerified = (badges:AuthorBadgeObject[] = []) => isBadge(badges, verfiedRegex);
+const getBadgeList = (badges:AuthorBadgeObject[]) => {
+  const badgeList:BadgeType[] = [];
+  if (isMember(badges)) badgeList.push('member');
+  if (isModerator(badges)) badgeList.push('moderator');
+  if (isVerified(badges)) badgeList.push('verified');
+  return badgeList;
+};
 
-const modifyNameDisplay = async (id:string, channelId:string, type?:'member'|'moderator'|'') => {
-  const nameContainer = await waitForElm(`#${id} span#author-name:not(.ytc-marked)`);
-  nameContainer.classList.add('ytc-marked');
+const modifyNameDisplay = async (id:string, channelId:string, badges:BadgeType[]) => {
+  const nameContainer = await waitForElm(`#${id.replace(/%/g, '\\%')} span#author-name:not(.ytc-marked)`);
+  nameContainer.classList.add('nnryv-marked');
   const anchor = document.createElement('a') as HTMLAnchorElement;
   anchor.href = `/channel/${channelId}`;
   anchor.innerText = nameContainer.textContent;
   const coloredName = document.createElement('span');
   coloredName.appendChild(anchor);
-  coloredName.classList.add('ytc-verifier');
-  switch (type) {
-  case 'member':
-    coloredName.classList.add('member');
-    break;
-  case 'moderator':
-    coloredName.classList.add('moderator');
-    break;
+  coloredName.classList.add('nnryv-verifier');
+  for (const badge of badges) {
+    coloredName.classList.add(badge);
   }
   for (const child of nameContainer.childNodes) {
     nameContainer.removeChild(child);
@@ -53,31 +57,41 @@ const replayReducer = (prev: Actions[], curr:Actions|ReplayChatItemAction) => {
 };
 
 const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
-  const content = liveChatData?.contents?.liveChatRenderer ?? liveChatData?.continuationContents?.liveChatContinuation;
+  const content =
+    liveChatData?.contents?.liveChatRenderer ??
+    liveChatData?.continuationContents?.liveChatContinuation;
   if (!content) return;
   const { actions } = content;
-  const actionTarget = actions.map((currentAction) =>
+  const actionTarget = (actions ?? []).map((currentAction) =>
     currentAction.replayChatItemAction ? currentAction.replayChatItemAction : currentAction)
     .reduce(replayReducer, []);
   const authorList:AuthorSummary[] = (actionTarget ?? [])
-    .map(({ addChatItemAction }) => addChatItemAction?.item?.liveChatTextMessageRenderer)
-    .filter(val => val)
-    .map(renderer => {
+    .map(({ addChatItemAction, addLiveChatTickerItemAction }) => {
+      const renderer =
+        addChatItemAction?.item?.liveChatTextMessageRenderer ??
+        addChatItemAction?.item?.liveChatPaidMessageRenderer ??
+        addLiveChatTickerItemAction?.item?.liveChatTickerSponsorItemRenderer;
+      return renderer && {
+        renderer,
+        paid: !!addChatItemAction?.item?.liveChatTextMessageRenderer,
+      };
+    }).filter(val => val)
+    .map(({ renderer, paid }) => {
       const {
         authorName, authorExternalChannelId, id, authorBadges,
         authorPhoto,
       } = renderer;
-      return {authorName, authorExternalChannelId, id, authorBadges };
+      return {
+        authorName, authorExternalChannelId, authorBadges,
+        id, paid
+      };
     });
   if (appContainer && type) {
     console.log(`${PREFIX} Dispatching chat init event`);
     appContainer.dispatchEvent(new CustomEvent('livechat', {detail: authorList}));
   }
   for (const { id, authorExternalChannelId, authorBadges } of authorList) {
-    await modifyNameDisplay(id, authorExternalChannelId,
-      isModerator(authorBadges) && 'moderator' ||
-      isMember(authorBadges) && 'member'
-    );
+    await modifyNameDisplay(id, authorExternalChannelId, getBadgeList(authorBadges));
   }
 };
 
@@ -128,5 +142,5 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
     }
     return response;
   };
-  console.log(`${PREFIX} Done injecting XHR Capture`);
+  console.log(`${PREFIX} Done injecting fetch Capture`);
 })();

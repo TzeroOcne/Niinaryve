@@ -1,3 +1,5 @@
+export type BadgeType = 'member' | 'moderator' | 'verified';
+
 export interface Param {
   key?: string;
   value?: string;
@@ -85,26 +87,27 @@ export interface AuthorBadgeObject {
   liveChatAuthorBadgeRenderer?: LiveChatAuthorBadgeRenderer;
 }
 
-export interface LiveChatTextMessageRenderer {
+export interface LiveChatMessageRenderer {
   message?: Message;
   authorName?: {
     simpleText?: string;
   };
-  authorPhoto?: AuthorPhoto;
+  authorPhoto?: AuthorPhoto | AuthorPhoto[];
+  sponsorPhoto?: AuthorPhoto | AuthorPhoto[];
   contextMenuEndpoint?: ContextMenuEndpoint;
   id?: string;
   timestampUsec?: string;
   authorExternalChannelId?: string;
   contextMenuAccessibility?: ContextMenuAccessibility;
   authorBadges?: AuthorBadgeObject[];
+  durationSec?: number;
+  fullDurationSec?: number;
 }
 
 export interface Item {
-  liveChatTextMessageRenderer?: LiveChatTextMessageRenderer;
-}
-
-export interface AddChatItemAction {
-  item?: Item;
+  liveChatTextMessageRenderer?: LiveChatMessageRenderer;
+  liveChatPaidMessageRenderer?: LiveChatMessageRenderer;
+  liveChatTickerSponsorItemRenderer?: LiveChatMessageRenderer;
 }
 
 export interface InvalidationId {
@@ -126,13 +129,18 @@ export interface Continuation {
 }
 
 export interface Actions {
-  addChatItemAction?: AddChatItemAction;
+  addChatItemAction?: ActionItem;
+  addLiveChatTickerItemAction?: ActionItem;
   replayChatItemAction?: ReplayChatItemAction;
 }
 
 export interface LiveChatContinuation {
   continuations?: Continuation[];
   actions?: Actions[];
+}
+
+export interface ActionItem {
+  item?: Item;
 }
 
 export interface ReplayChatItemAction {
@@ -194,6 +202,7 @@ export interface AuthorSummary {
   authorExternalChannelId: string;
   id: string;
   authorBadges: AuthorBadgeObject[];
+  paid: boolean;
 }
 
 export interface LiveChatData {
