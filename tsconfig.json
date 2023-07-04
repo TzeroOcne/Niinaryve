@@ -39,7 +39,7 @@
   },
   "include": [
     "src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte",
-    "build.ts",
+    "build.ts", "build.local.ts",
     "plugin/**/*.ts",
     "generator/**/*.ts",
   ],

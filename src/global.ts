@@ -1,6 +1,6 @@
 import { magentaBright } from 'colorette';
 
-export const PREFIX = `[${magentaBright('YTChatVer')}]`;
+export const PREFIX = `[${magentaBright('Niinaryve')}]`;
 export const APP_ID = 'nnryv-app';
 
 export function waitForElm(selector:string, parentTarget?:Element) {
