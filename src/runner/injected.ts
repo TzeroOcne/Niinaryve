@@ -30,8 +30,9 @@ const getBadgeList = (badges:AuthorBadgeObject[]) => {
   return badgeList;
 };
 
-const modifyNameDisplay = async (id:string, channelId:string, badges:BadgeType[]) => {
-  const nameContainer = await waitForElm(`#${id.replace(/%/g, '\\%')} span#author-name:not(.ytc-marked)`);
+const modifyNameDisplay = async (id:string, channelId:string, badges:BadgeType[], type?: 'init') => {
+  const nameContainer = await waitForElm(`#${id.replace(/%/g, '\\%')} span#author-name:not(.nnryv-marked)`);
+  if (!nameContainer) return;
   nameContainer.classList.add('nnryv-marked');
   const anchor = document.createElement('a') as HTMLAnchorElement;
   anchor.href = `/channel/${channelId}`;
@@ -91,7 +92,7 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
     appContainer.dispatchEvent(new CustomEvent('livechat', {detail: authorList}));
   }
   for (const { id, authorExternalChannelId, authorBadges } of authorList) {
-    await modifyNameDisplay(id, authorExternalChannelId, getBadgeList(authorBadges));
+    await modifyNameDisplay(id, authorExternalChannelId, getBadgeList(authorBadges), type);
   }
 };
 
