@@ -92,7 +92,7 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
     appContainer.dispatchEvent(new CustomEvent('livechat', {detail: authorList}));
   }
   for (const { id, authorExternalChannelId, authorBadges } of authorList) {
-    await modifyNameDisplay(id, authorExternalChannelId, getBadgeList(authorBadges), type);
+    modifyNameDisplay(id, authorExternalChannelId, getBadgeList(authorBadges), type);
   }
 };
 
