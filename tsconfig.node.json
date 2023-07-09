@@ -9,5 +9,6 @@
     "vite.config.ts",
     // "generator/**/*.ts",
     "logger/**/*.ts",
+    "plugin/**/*.ts",
   ]
 }

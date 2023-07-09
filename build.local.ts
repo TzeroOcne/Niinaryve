@@ -1,5 +1,6 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import type { EntryOptions } from '@types';
+import { copy } from 'fs-extra';
 import { writeFile } from 'fs/promises';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
@@ -9,6 +10,7 @@ import { generateManifest } from './generator';
 const youtubeLivechatURLPattern = 'https://*.youtube.com/*';
 const youtubeURLPattern = 'https://*.youtube.com/*';
 
+const popupAssetDir = resolve('assets', 'popup');
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const entryFile:EntryOptions[] = [
@@ -16,6 +18,12 @@ const entryFile:EntryOptions[] = [
     name: 'content-script',
     path: 'src/extension/content-script.local.ts',
     empty: true,
+  },
+  {
+    name: 'popup',
+    path: 'src/extension/popup/popup.ts',
+    dir: 'dist/popup',
+    empty: true
   },
   {
     name: 'app',
@@ -42,7 +50,11 @@ const defaultConfig = defineConfig({
       {
         find: '@global',
         replacement: resolve(__dirname, 'src', 'global'),
-      }
+      },
+      {
+        find: '@popup',
+        replacement: resolve(__dirname, 'src', 'extension', 'popup'),
+      },
     ],
   },
   plugins: [
@@ -72,11 +84,19 @@ async function buildPackages () {
     });
   }
   
+  await copy(popupAssetDir, resolve('dist', 'popup'));
+  
   await writeFile('dist/manifest.json', generateManifest({
     manifest_version: 3,
     name: 'Niinaryve-alpha',
-    version: '1.0.0',
-    version_name: '1.0.0 alpha',
+    version: '1.1.0',
+    version_name: '1.1.0 alpha',
+    action: {
+      default_popup: 'popup/popup.html'
+    },
+    permissions: [
+      'storage',
+    ],
     content_scripts: [
       {
         run_at: 'document_start',

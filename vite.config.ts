@@ -1,3 +1,4 @@
+import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import chromeExtension from './plugin/rollup-plugin-chrome-extension';
 
@@ -6,6 +7,18 @@ const youtubeURLPattern = 'https://*.youtube.com/*';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  resolve: {
+    alias: [
+      {
+        find: '@global',
+        replacement: resolve(__dirname, 'src', 'global'),
+      },
+      {
+        find: '@popup',
+        replacement: resolve(__dirname, 'src', 'extension', 'popup'),
+      },
+    ],
+  },
   plugins: [
     // svelte(),
     chromeExtension({
