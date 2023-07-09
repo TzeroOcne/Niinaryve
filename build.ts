@@ -8,7 +8,7 @@ import { build, defineConfig } from 'vite';
 import { generateManifest } from './generator';
 
 const youtubeLivechatURLPattern = 'https://*.youtube.com/*';
-const youtubeURLPattern = 'https://*.youtube.com/*';
+// const youtubeURLPattern = 'https://*.youtube.com/*';
 
 const iconName = (size:16 | 32 | 48 | 128) => `icons/stripe-white-lined-boxed-${size}.png`;
 
@@ -16,6 +16,7 @@ const extensionSrcDir = resolve('src', 'extension');
 const extensionDir = resolve('dist', 'extension');
 const manifestPath = resolve(extensionDir, 'manifest.json');
 const iconAssetDir = resolve('assets', 'icons');
+const popupAssetDir = resolve('assets', 'popup');
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const extensionDescription = '\
@@ -35,8 +36,14 @@ const entryFile:EntryOptions[] = [
   },
   {
     name: 'content-script',
-    path: resolve(extensionSrcDir, 'content-script.ts'),
+    path: resolve(extensionSrcDir, 'content-script.prod.ts'),
     dir: 'dist/extension',
+    empty: true
+  },
+  {
+    name: 'popup',
+    path: 'src/extension/popup/popup.ts',
+    dir: 'dist/extension/popup',
     empty: true
   },
   {
@@ -53,7 +60,11 @@ const defaultConfig = defineConfig({
       {
         find: '@global',
         replacement: resolve(__dirname, 'src', 'global'),
-      }
+      },
+      {
+        find: '@popup',
+        replacement: resolve(__dirname, 'src', 'extension', 'popup'),
+      },
     ],
   },
   plugins: [
@@ -84,21 +95,25 @@ async function buildPackages () {
   }
   
   await copy(iconAssetDir, resolve(extensionDir, 'icons'));
+  await copy(popupAssetDir, resolve(extensionDir, 'popup'));
   
   await writeFile(manifestPath, generateManifest({
     manifest_version: 3,
     name: 'Niinaryve',
-    version: '1.0.0',
+    version: '1.1.0',
     icons: {
       '16': iconName(16),
       '32': iconName(32),
       '48': iconName(48),
       '128': iconName(128),
     },
-    description: extensionDescription,
-    content_security_policy: {
-      extension_pages: 'script-src \'self\' ; object-src \'self\';',
+    action: {
+      default_popup: 'popup/popup.html'
     },
+    permissions: [
+      'storage',
+    ],
+    description: extensionDescription,
     content_scripts: [
       {
         run_at: 'document_start',
@@ -109,18 +124,6 @@ async function buildPackages () {
           youtubeLivechatURLPattern
         ],
         all_frames: true,
-      }
-    ],
-    web_accessible_resources: [
-      {
-        resources: [
-          'main.js',
-          'injected.js',
-          'main.css',
-        ],
-        matches: [
-          youtubeURLPattern
-        ]
       }
     ],
   }));

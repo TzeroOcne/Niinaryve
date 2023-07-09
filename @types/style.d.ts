@@ -1,0 +1,1 @@
+export type StyleVarName = 'nnryv-name-base' | 'nnryv-name-member' | 'nnryv-name-moderator';

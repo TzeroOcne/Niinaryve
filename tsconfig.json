@@ -33,6 +33,8 @@
       "@generator": ["./generator/index.ts"],
       "@global": ["./src/global.ts"],
       "@logger": ["./logger/index.ts"],
+      "@popup/*": ["./src/extension/popup/*"],
+      "@popup/utils/*": ["./src/extension/popup/utils/*"],
     },
     // "esModuleInterop": false,
     // "moduleResolution": "Node",

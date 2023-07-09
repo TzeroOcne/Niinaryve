@@ -1,10 +1,14 @@
-import { APP_ID, PREFIX, waitForElm } from '@global';
-import type { YouTubeScriptConfig } from '@types';
+import { APP_ID, PREFIX, styleDefaultList, styleDefaultValue, styleNameList, waitForElm } from '@global';
+import type { StorageChange, StyleVarName, YouTubeScriptConfig } from '@types';
 
 console.log(`${PREFIX} extension loaded`);
 
 const injectedIdentifier = 'nnryv-injected';
 const addIdentifier = (target:HTMLElement) => target.classList.add(injectedIdentifier);
+
+const changeProperty = (target:HTMLElement, name:StyleVarName, value) => {
+  target.style.setProperty(`--${name}`, value);
+};
 
 export default ({
   injectedCSSUrl,
@@ -13,6 +17,12 @@ export default ({
   openJSUrl,
 }:YouTubeScriptConfig) => {
   document.addEventListener('DOMContentLoaded', async () => {
+    const root = document.querySelector(':root') as HTMLElement;
+    const color = await chrome.storage.sync.get(styleNameList);
+    for (const { name, defaultValue } of styleDefaultList) {
+      changeProperty(root, name, color[name] ?? defaultValue);
+    }
+    
     console.log(`${PREFIX} Waiting chat app`);
     const chatApp = await waitForElm('body > yt-live-chat-app');
     console.log(`${PREFIX} Chat app found`);
@@ -59,5 +69,15 @@ export default ({
     head.appendChild(injectedScript);
 
     console.log(`${PREFIX} Done injecting script`);
+    
+    console.log(`${PREFIX} Listen to event`);
+    chrome.storage.onChanged.addListener((changes:StorageChange, area) => {
+      for (const name of styleNameList) {
+        if (!changes[name]) continue;
+        changeProperty(root, name,
+          changes[name].newValue ?? styleDefaultValue[name],
+        );
+      }
+    });
   });
 };
