@@ -39,7 +39,7 @@ jobs:
       run: mkdir -p dist/archive
     - name: Zip extension
       run:
-        cd dist/extension
+        cd dist/extension &&
         zip -qq -rv ../archive/chrome-extension.zip *
     - name: Semantic release
       run: npm run semantic-release
