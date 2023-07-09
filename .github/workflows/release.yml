@@ -37,10 +37,10 @@ jobs:
       uses: montudor/action-zip@v1
     - name: Create archive folder
       run: mkdir -p dist/archive
-    - run: cd dist/extension
     - name: Zip extension
-      run: zip -qq -rv ../archive/chrome-extension.zip *
-    - run: cd ../..
+      run:
+        cd dist/extension
+        zip -qq -rv ../archive/chrome-extension.zip *
     - name: Semantic release
       run: npm run semantic-release
     # - uses: actions/upload-artifact@v3
