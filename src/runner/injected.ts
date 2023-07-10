@@ -30,6 +30,12 @@ const getBadgeList = (badges:AuthorBadgeObject[]) => {
   return badgeList;
 };
 
+const removeNameDup = async () => {
+  for (const nameDup of document.querySelectorAll('.nnryv-verifier ~ .nnryv-verifier')) {
+    nameDup.remove();
+  }
+};
+
 const modifyNameDisplay = async (id:string, channelId:string, badges:BadgeType[], type?: 'init') => {
   const nameContainer = await waitForElm(`#${id.replace(/%/g, '\\%')} span#author-name:not(.nnryv-marked)`);
   if (!nameContainer) return;
@@ -47,6 +53,7 @@ const modifyNameDisplay = async (id:string, channelId:string, badges:BadgeType[]
     nameContainer.removeChild(child);
   }
   nameContainer.appendChild(coloredName);
+  setTimeout(removeNameDup, 0);
 };
 
 const replayReducer = (prev: Actions[], curr:Actions|ReplayChatItemAction) => {
