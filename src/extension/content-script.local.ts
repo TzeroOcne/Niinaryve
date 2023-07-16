@@ -6,5 +6,7 @@ import runExtension from './content-script';
     injectedJSUrl: chrome.runtime.getURL('runner/injected.js'),
     openCSSUrl: chrome.runtime.getURL('app/open.css'),
     openJSUrl: chrome.runtime.getURL('app/open.js'),
+    appCSSUrl: chrome.runtime.getURL('app/app.css'),
+    appJSUrl: chrome.runtime.getURL('app/app.js'),
   });
 })();

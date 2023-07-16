@@ -30,12 +30,14 @@ export interface Message {
   runs?: Run[];
 }
 
+export interface Thumbnail {
+  url?: string;
+  width?: number;
+  height?: number;
+}
+
 export interface AuthorPhoto {
-  thumbnails?: {
-    url?: string;
-    width?: number;
-    height?: number;
-  }[];
+  thumbnails?: Thumbnail[];
 }
 
 export interface ContextMenuEndpoint {
@@ -203,6 +205,9 @@ export interface AuthorSummary {
   id: string;
   authorBadges: AuthorBadgeObject[];
   paid: boolean;
+  photo?: string;
+  badgeList: BadgeType[];
+  badgeImg?: string;
 }
 
 export interface LiveChatData {

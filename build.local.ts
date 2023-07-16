@@ -1,5 +1,6 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import type { EntryOptions } from '@types';
+import { bold, greenBright } from 'colorette';
 import { copy } from 'fs-extra';
 import { writeFile } from 'fs/promises';
 import { dirname, resolve } from 'path';
@@ -121,6 +122,8 @@ async function buildPackages () {
       }
     ],
   }));
+  
+  console.log(greenBright(bold('Done building in local')));
 }
 
 buildPackages();
