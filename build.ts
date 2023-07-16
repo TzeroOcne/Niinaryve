@@ -100,7 +100,7 @@ async function buildPackages () {
   await writeFile(manifestPath, generateManifest({
     manifest_version: 3,
     name: 'Niinaryve',
-    version: '1.1.0',
+    version: '1.2.0',
     icons: {
       '16': iconName(16),
       '32': iconName(32),
