@@ -17,5 +17,7 @@ const getTagUrl = 'https://api.github.com/repos/TzeroOcne/Niinaryve/tags?per_pag
     injectedJSUrl: fileUrl('injected', 'runner', 'js', latestTagName),
     openCSSUrl: fileUrl('open', 'app', 'css', latestTagName),
     openJSUrl: fileUrl('open', 'app', 'js', latestTagName),
+    appCSSUrl: fileUrl('app', 'app', 'css', latestTagName),
+    appJSUrl: fileUrl('app', 'app', 'js', latestTagName),
   });
 })();
