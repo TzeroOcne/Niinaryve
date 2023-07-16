@@ -14,15 +14,19 @@ div#nnryv-app.hide {
   display: none;
 }
 
-.nnryv-verifier a {
-  text-decoration: none;
+.nnryv-verifier {
   color: var(--nnryv-name-base);
 }
 
-.nnryv-verifier.moderator a {
+.nnryv-verifier a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.nnryv-verifier.moderator {
   color: var(--nnryv-name-moderator);
 }
 
-.nnryv-verifier.member a {
+.nnryv-verifier.member {
   color: var(--nnryv-name-member);
 }

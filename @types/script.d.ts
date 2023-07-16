@@ -3,4 +3,6 @@ export interface YouTubeScriptConfig {
   injectedJSUrl:string;
   openCSSUrl:string;
   openJSUrl:string;
+  appCSSUrl:string;
+  appJSUrl:string;
 }

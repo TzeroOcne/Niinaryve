@@ -1,5 +1,5 @@
 import { APP_ID, PREFIX, waitForElm } from '@global';
-import type { Actions, AuthorBadgeObject, AuthorSummary, BadgeType, LiveChatData, ReplayChatItemAction } from '@types';
+import type { Actions, AuthorBadgeObject, AuthorPhoto, AuthorSummary, BadgeType, LiveChatData, ReplayChatItemAction, Thumbnail } from '@types';
 
 import './injected.css';
 
@@ -37,7 +37,7 @@ const removeNameDup = async () => {
 };
 
 const modifyNameDisplay = async (id:string, channelId:string, badges:BadgeType[], type?: 'init') => {
-  const nameContainer = await waitForElm(`#${id.replace(/%/g, '\\%')} span#author-name:not(.nnryv-marked)`);
+  const nameContainer = await waitForElm(`[id="${id}"] span#author-name:not(.nnryv-marked)`);
   if (!nameContainer) return;
   nameContainer.classList.add('nnryv-marked');
   const anchor = document.createElement('a') as HTMLAnchorElement;
@@ -62,6 +62,37 @@ const replayReducer = (prev: Actions[], curr:Actions|ReplayChatItemAction) => {
     return prev.concat(...actions);
   }
   return prev.concat(curr as Actions);
+};
+
+const getBiggestThumbnail = (thumbnails:Thumbnail[] = []) => {
+  if (thumbnails.length === 0) return;
+  let result:Thumbnail = thumbnails[0];
+  for (const curr of thumbnails.slice(1)) {
+    if (curr.height > result.height) result = curr;
+  }
+  return result;
+};
+
+const getBiggestPhoto = (authorPhoto:AuthorPhoto | AuthorPhoto[]) => {
+  let thumbnail:Thumbnail;
+  if (authorPhoto instanceof Array) {
+    const filteredThumbnails = authorPhoto
+      .map(({ thumbnails }) => getBiggestThumbnail(thumbnails))
+      .filter(thumbnail => thumbnail);
+    thumbnail = getBiggestThumbnail(filteredThumbnails);
+  } else {
+    thumbnail = getBiggestThumbnail(authorPhoto?.thumbnails);
+  }
+  return thumbnail?.url;
+};
+
+const getBiggestBadge = (authorBadges:AuthorBadgeObject[] = []) => {
+  if (authorBadges.length === 0) return;
+  const filteredBagdes = authorBadges.filter(badge =>
+    badge?.liveChatAuthorBadgeRenderer?.customThumbnail?.thumbnails)
+    .map(badge => badge.liveChatAuthorBadgeRenderer.customThumbnail.thumbnails)
+    .reduce((prev, curr) => [...prev, ...curr], []);
+  return getBiggestThumbnail(filteredBagdes)?.url;
 };
 
 const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
@@ -89,17 +120,22 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
         authorName, authorExternalChannelId, id, authorBadges,
         authorPhoto,
       } = renderer;
+      const photo = getBiggestPhoto(authorPhoto);
+      const badgeImg = getBiggestBadge(authorBadges);
+      const badgeList = getBadgeList(authorBadges);
       return {
         authorName, authorExternalChannelId, authorBadges,
-        id, paid
+        id, paid, photo, badgeList, badgeImg,
       };
     });
-  if (appContainer && type) {
-    console.log(`${PREFIX} Dispatching chat init event`);
+  if (appContainer) {
+    if (type) {
+      console.log(`${PREFIX} Dispatching chat init event`);
+    }
     appContainer.dispatchEvent(new CustomEvent('livechat', {detail: authorList}));
   }
-  for (const { id, authorExternalChannelId, authorBadges } of authorList) {
-    modifyNameDisplay(id, authorExternalChannelId, getBadgeList(authorBadges), type);
+  for (const { id, authorExternalChannelId, badgeList } of authorList) {
+    modifyNameDisplay(id, authorExternalChannelId, badgeList, type);
   }
 };
 
