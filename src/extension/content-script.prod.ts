@@ -6,11 +6,13 @@ const fileUrl = (name:string, folder: 'runner' | 'app', type: 'css' | 'js', vers
 const getTagUrl = 'https://api.github.com/repos/TzeroOcne/Niinaryve/tags?per_page=1';
 
 (async () => {
-  const tagList:TagArray = await (await fetch(getTagUrl)).json();
+  const response = await fetch(getTagUrl);
+  const tagList:TagArray = await response.json();
   if (tagList.length === 0) {
     throw Error('cannot found latest tag');
   }
-  const [{ name:latestTagName }] = tagList;
+  const [{ name:latestTagName }] = response.status < 400 ? tagList :
+    [{ name:'latest' }];
   
   runExtension({
     injectedCSSUrl: fileUrl('injected', 'runner', 'css', latestTagName),

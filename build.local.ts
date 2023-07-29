@@ -90,8 +90,8 @@ async function buildPackages () {
   await writeFile('dist/manifest.json', generateManifest({
     manifest_version: 3,
     name: 'Niinaryve-alpha',
-    version: '1.1.0',
-    version_name: '1.1.0 alpha',
+    version: '1.2.1',
+    version_name: '1.2.1 alpha',
     action: {
       default_popup: 'popup/popup.html'
     },
