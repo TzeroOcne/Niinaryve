@@ -14,12 +14,18 @@ export const styleDefaultValue:Record<StyleVarName, string> = {
   'nnryv-name-base': '#7fffd4',
   'nnryv-name-member': '#2ba640',
   'nnryv-name-moderator': '#5e84f1',
+  'nnryv-timestamp-display-absolute': 'none',
+  'nnryv-timestamp-display-relative': 'inline',
 };
 
 export const styleDefaultList = styleNameList.map(name => ({
   name,
   defaultValue: styleDefaultValue[name],
 }));
+
+export const changeProperty = (target:HTMLElement, name:StyleVarName, value) => {
+  target.style.setProperty(`--${name}`, value);
+};
 
 export function waitForElm(selector:string, parentTarget?:Element) {
   const target = parentTarget ?? document.body;

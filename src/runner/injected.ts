@@ -56,6 +56,26 @@ const modifyNameDisplay = async (id:string, channelId:string, badges:BadgeType[]
   setTimeout(removeNameDup, 0);
 };
 
+const modifyTimestamp = async (id:string, timestamp:number, type?: 'init') => {
+  const timestampContainer = await waitForElm(`[id="${id}"] span#timestamp:not(.nnryv-marked)`) as HTMLSpanElement;
+  if (!timestampContainer) return;
+  timestampContainer.classList.add('nnryv-marked');
+  const chatTimestamp = new Date(timestamp);
+  const timestampRelative = document.createElement('span') as HTMLSpanElement;
+  timestampRelative.id = 'timestamp-relative';
+  timestampRelative.innerText = timestampContainer.innerText;
+  const timestampAbsolute = document.createElement('span') as HTMLSpanElement;
+  timestampAbsolute.id = 'timestamp-absolute-local';
+  const hour = chatTimestamp.getHours().toString();
+  const minute = chatTimestamp.getMinutes().toString();
+  timestampAbsolute.innerText = `${hour}:${minute.padStart(2, '0')}`;
+  for (const child of timestampContainer.childNodes) {
+    timestampContainer.removeChild(child);
+  }
+  timestampContainer.appendChild(timestampRelative);
+  timestampContainer.appendChild(timestampAbsolute);
+};
+
 const replayReducer = (prev: Actions[], curr:Actions|ReplayChatItemAction) => {
   const { actions } = curr as ReplayChatItemAction;
   if (actions) {
@@ -118,14 +138,16 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
     .map(({ renderer, paid }) => {
       const {
         authorName, authorExternalChannelId, id, authorBadges,
-        authorPhoto,
+        authorPhoto, timestampUsec,
       } = renderer;
+      
       const photo = getBiggestPhoto(authorPhoto);
       const badgeImg = getBiggestBadge(authorBadges);
       const badgeList = getBadgeList(authorBadges);
       return {
         authorName, authorExternalChannelId, authorBadges,
         id, paid, photo, badgeList, badgeImg,
+        timestamp: Number(timestampUsec) / 1000,
       };
     });
   if (appContainer) {
@@ -134,8 +156,9 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
     }
     appContainer.dispatchEvent(new CustomEvent('livechat', {detail: authorList}));
   }
-  for (const { id, authorExternalChannelId, badgeList } of authorList) {
+  for (const { id, authorExternalChannelId, badgeList, timestamp } of authorList) {
     modifyNameDisplay(id, authorExternalChannelId, badgeList, type);
+    modifyTimestamp(id, timestamp, type);
   }
 };
 

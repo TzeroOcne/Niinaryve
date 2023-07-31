@@ -208,6 +208,7 @@ export interface AuthorSummary {
   photo?: string;
   badgeList: BadgeType[];
   badgeImg?: string;
+  timestamp?: number;
 }
 
 export interface LiveChatData {
