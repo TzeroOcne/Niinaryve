@@ -1,7 +1,12 @@
-#nnryv-open #button-container {
+#nnryv-open {
   display: grid;
+  grid-auto-flow: column;
+}
+
+#nnryv-open #button-container {
   align-items: center;
   justify-items: center;
+  width: 40px;
 }
 
 #nnryv-open #button-container button {

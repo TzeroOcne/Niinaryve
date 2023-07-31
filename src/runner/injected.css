@@ -2,6 +2,8 @@
   --nnryv-name-base: aquamarine;
   --nnryv-name-moderator: var(--yt-live-chat-moderator-color,#5e84f1);
   --nnryv-name-member: var(--yt-live-chat-sponsor-color);
+  --nnryv-timestamp-display-relative: inline;
+  --nnryv-timestamp-display-absolute: none;
 }
 
 div#nnryv-app {
@@ -12,6 +14,14 @@ div#nnryv-app {
 
 div#nnryv-app.hide {
   display: none;
+}
+
+span#timestamp-relative {
+  display: var(--nnryv-timestamp-display-relative);
+}
+
+span#timestamp-absolute-local {
+  display: var(--nnryv-timestamp-display-absolute);
 }
 
 .nnryv-verifier {

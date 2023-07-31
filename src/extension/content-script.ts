@@ -1,14 +1,10 @@
-import { APP_ID, PREFIX, styleDefaultList, styleDefaultValue, styleNameList, waitForElm } from '@global';
-import type { StorageChange, StyleVarName, YouTubeScriptConfig } from '@types';
+import { APP_ID, PREFIX, changeProperty, styleDefaultList, styleDefaultValue, styleNameList, waitForElm } from '@global';
+import type { StorageChange, YouTubeScriptConfig } from '@types';
 
 console.log(`${PREFIX} extension loaded`);
 
 const injectedIdentifier = 'nnryv-injected';
 const addIdentifier = (target:HTMLElement) => target.classList.add(injectedIdentifier);
-
-const changeProperty = (target:HTMLElement, name:StyleVarName, value) => {
-  target.style.setProperty(`--${name}`, value);
-};
 
 export default ({
   injectedCSSUrl,
