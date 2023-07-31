@@ -44,6 +44,13 @@
   >
     <Fa icon={faClock} />
   </button>
+</div>
+<div id="button-container" class="
+  yt-spec-button-shape-next
+  yt-spec-button-shape-next--mono
+  yt-spec-button-shape-next--text
+  yt-spec-button-shape-next--icon-only-default
+">
   <button
     on:click={toggleApp}
     class="
