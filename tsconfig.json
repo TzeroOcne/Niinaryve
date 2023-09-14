@@ -17,8 +17,14 @@
     "baseUrl": ".",
     "paths": {
       "$lib/*": [ "src/lib/*" ],
+      "$components/*": [ "src/components/*" ],
+      "@types": [ "@types/index.ts" ],
+      "@consts": [ "@consts/index.ts" ],
     },
   },
-  "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
+  "include": [
+    "src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte",
+    "@types/**/*.ts", "@consts/**/*.ts",
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
