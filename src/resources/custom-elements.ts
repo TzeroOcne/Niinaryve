@@ -1,11 +1,15 @@
-import ChatName from '$components/ChatName.svelte';
-import type { ComponentType } from 'svelte';
+import '$components/ChatName.svelte';
+import { PREFIX } from '$lib/app/app';
 
-const defineCustomElement = (name:string, { element }:ComponentType) => {
-  if (element)
-    return customElements.define(name, element);
-};
+console.log(`${PREFIX} Register custom element`);
 
-setTimeout(() => {
-  defineCustomElement('nnryv-chat-username', ChatName);
-}, 0);
+// const defineCustomElement = (name:string, { element }:ComponentType) => {
+//   console.log({ element });
+//   if (element)
+//     return customElements.define(name, element);
+// };
+
+// (async () => {
+//   console.log({ ChatName });
+//   defineCustomElement('nnryv-chat-username', ChatName);
+// })();

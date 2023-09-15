@@ -2,13 +2,11 @@ import { APP_ID, PREFIX } from '$lib/app/app';
 import { waitForElm } from '$lib/document';
 import type { Actions, AuthorBadgeObject, AuthorPhoto, AuthorSummary, BadgeType, LiveChatData, ReplayChatItemAction, Thumbnail } from '@types';
 
-
 const { fetch: originalFetch } = window;
 let appContainer:HTMLDivElement;
 const memberRegex = /member/i;
 const moderatorRegex = /moderator/i;
 const verfiedRegex = /verified/i;
-
 
 const isBadge = (badges:AuthorBadgeObject[] = [], regex:RegExp):boolean => {
   if (badges.length === 0) {
@@ -203,6 +201,4 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
     return response;
   };
   console.log(`${PREFIX} Done injecting fetch Capture`);
-
-  console.log(`${PREFIX} Register custom element`);
 })();

@@ -1,5 +1,5 @@
 <svelte:options
-  customElement="nnryv-chat-name"
+  customElement="nnryv-chat-username"
 />
 
 <script lang="ts">

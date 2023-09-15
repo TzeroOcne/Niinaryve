@@ -8,6 +8,7 @@ const addIdentifier = (target:HTMLElement) => target.classList.add(injectedIdent
 export const injectApp = async () => {
   document.addEventListener('DOMContentLoaded', async () => {
     const root = document.querySelector(':root') as HTMLElement;
+    console.log(1);
 
     const chatApp = await getChatApp(root);
     console.log(`${PREFIX} Chat app found`);
@@ -29,11 +30,11 @@ export const injectApp = async () => {
     addIdentifier(customElementScript);
     head.appendChild(customElementScript);
 
-    const injectedJSUrl = chrome.runtime.getURL('src/resources/injected.js');
+    const injectedJSURL = chrome.runtime.getURL('src/resources/injected.js');
     const injectedScript = document.createElement('script');
-    injectedScript.src = injectedJSUrl;
+    injectedScript.src = injectedJSURL;
     injectedScript.type = 'module';
-    injectedScript.setAttribute('extension_origin', injectedJSUrl);
+    injectedScript.setAttribute('extension_origin', injectedJSURL);
     addIdentifier(injectedScript);
     head.appendChild(injectedScript);
   });
