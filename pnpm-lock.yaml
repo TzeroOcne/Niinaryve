@@ -26,6 +26,9 @@ devDependencies:
   '@types/chrome':
     specifier: ^0.0.245
     version: 0.0.245
+  '@types/minimist':
+    specifier: ^1.2.2
+    version: 1.2.2
   '@typescript-eslint/eslint-plugin':
     specifier: ^6.6.0
     version: 6.6.0(@typescript-eslint/parser@6.6.0)(eslint@8.49.0)(typescript@5.2.2)
@@ -44,6 +47,9 @@ devDependencies:
   eslint-plugin-svelte:
     specifier: ^2.33.1
     version: 2.33.1(eslint@8.49.0)(svelte@4.2.0)
+  minimist:
+    specifier: ^1.2.8
+    version: 1.2.8
   nodemon:
     specifier: ^3.0.1
     version: 3.0.1
@@ -555,6 +561,10 @@ packages:
 
   /@types/json-schema@7.0.12:
     resolution: {integrity: sha512-Hr5Jfhc9eYOQNPYO5WLDq/n4jqijdHNlDXjuAQkkt+mWdQR+XJToOHrsD4cPaMXpn6KO7y2+wM8AZEs8VpBLVA==}
+    dev: true
+
+  /@types/minimist@1.2.2:
+    resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
     dev: true
 
   /@types/node@20.6.0:

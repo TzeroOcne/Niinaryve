@@ -1,5 +1,6 @@
 import webExtension from '@samrum/vite-plugin-web-extension';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import minimist from 'minimist';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { build } from 'vite';
@@ -9,6 +10,18 @@ const youtubeURLPattern = 'https://*.youtube.com/*';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const sourceDir = path.resolve(__dirname, './src');
+const argv = minimist(process.argv.slice(2));
+
+const isWatch = argv?.w ?? argv?.watch ?? false;
+
+/** @type {import('vite').BuildOptions} */
+const defaultBuildOptions = isWatch ?
+  {
+    watch: {
+      include: [ 'src/**' ],
+    },
+  } :
+  {};
 
 const defaultAlias = {
   '~': sourceDir,
@@ -22,7 +35,11 @@ const buildExtension = async () => {
   await build({
     configFile: false,
     plugins: [
-      svelte(),
+      svelte({
+        compilerOptions: {
+          customElement: true,
+        },
+      }),
       webExtension({
         manifest: {
           name: 'niinaryve',
@@ -66,9 +83,7 @@ const buildExtension = async () => {
       alias: defaultAlias,
     },
     build: {
-      watch: {
-        include: [ 'src/**' ],
-      },
+      ...(defaultBuildOptions),
     },
   });
 };
@@ -91,10 +106,8 @@ const buildSingleEntry = async (name,input) => {
       alias: defaultAlias,
     },
     build: {
+      ...(defaultBuildOptions),
       emptyOutDir: false,
-      watch: {
-        include: [ 'src/**' ],
-      },
       rollupOptions: {
         input: {
           [name]: input,
@@ -108,7 +121,6 @@ const buildSingleEntry = async (name,input) => {
 };
 
 const buildPackages = async () => {
-  console.log(__dirname);
   await buildExtension();
   await buildSingleEntry(
     'src/resources/injected',
