@@ -9,6 +9,7 @@ export default {
   theme: {
     extend: {},
   },
+  prefix: '',
   plugins: [
     daisyui,
   ],

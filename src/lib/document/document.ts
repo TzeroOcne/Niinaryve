@@ -1,5 +1,5 @@
 export function waitForElm<
-  R extends Element = Element,
+  R extends Element = HTMLElement,
 >(selector:string, parentTarget?:Element) {
   const target = parentTarget ?? document.body;
   return new Promise<R>(resolve => {

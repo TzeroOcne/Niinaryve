@@ -38,6 +38,9 @@ devDependencies:
   autoprefixer:
     specifier: ^10.4.15
     version: 10.4.15(postcss@8.4.29)
+  colorette:
+    specifier: ^2.0.20
+    version: 2.0.20
   daisyui:
     specifier: ^3.7.3
     version: 3.7.3
@@ -937,6 +940,10 @@ packages:
 
   /colord@2.9.3:
     resolution: {integrity: sha512-jeC1axXpnb0/2nn/Y1LPuLdgXBLH7aDcHu4KEKfqw3CUhX7ZpfBSlPKyqXE6btIgEzfWtrX3/tyBCaCvXvMkOw==}
+    dev: true
+
+  /colorette@2.0.20:
+    resolution: {integrity: sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==}
     dev: true
 
   /commander@4.1.1:

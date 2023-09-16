@@ -1,4 +1,5 @@
 import { APP_ID, PREFIX, getChatApp } from '$lib/app/app';
+import { waitForElm } from '$lib/document';
 
 console.log(`${PREFIX} extension loaded`);
 
@@ -22,15 +23,36 @@ export const injectApp = async () => {
     addIdentifier(appContainer);
     chatApp.appendChild(appContainer);
 
-    const customElementJSURL = chrome.runtime.getURL('src/resources/custom-elements.js');
-    const customElementScript = document.createElement('script');
-    customElementScript.src = customElementJSURL;
-    customElementScript.type = 'module';
-    customElementScript.setAttribute('extension_origin', customElementJSURL);
-    addIdentifier(customElementScript);
-    head.appendChild(customElementScript);
+    const injectedCSSUrl = chrome.runtime.getURL('src/resources/injected/injected.css');
+    const injectedStyle = document.createElement('link');
+    injectedStyle.rel = 'stylesheet';
+    injectedStyle.href = injectedCSSUrl;
+    addIdentifier(injectedStyle);
+    head.prepend(injectedStyle);
 
-    const injectedJSURL = chrome.runtime.getURL('src/resources/injected.js');
+    // const customElementJSURL = chrome.runtime.getURL('src/resources/custom-elements.js');
+    // const customElementScript = document.createElement('script');
+    // customElementScript.src = customElementJSURL;
+    // customElementScript.type = 'module';
+    // customElementScript.setAttribute('extension_origin', customElementJSURL);
+    // addIdentifier(customElementScript);
+    // head.appendChild(customElementScript);
+    waitForElm('yt-live-chat-button', chatApp).then(async (buttonMenu:HTMLElement) => {
+      const appMenu = document.createElement('div') as HTMLDivElement;
+      appMenu.id = 'nnryv-app-menu';
+      addIdentifier(appMenu);
+      buttonMenu?.parentNode?.insertBefore(appMenu, buttonMenu);
+
+      // const openScript = document.createElement('script') as HTMLScriptElement;
+      // openScript.src = openJSUrl;
+      // openScript.type = 'module';
+      // openScript.setAttribute('extension_origin', openJSUrl);
+      // addIdentifier(openScript);
+      // head.appendChild(openScript);
+    });
+
+
+    const injectedJSURL = chrome.runtime.getURL('src/resources/injected/injected.js');
     const injectedScript = document.createElement('script');
     injectedScript.src = injectedJSURL;
     injectedScript.type = 'module';

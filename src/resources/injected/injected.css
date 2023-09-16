@@ -1,0 +1,7 @@
+html {
+  --nnryv-name-base: aquamarine;
+  --nnryv-name-moderator: var(--yt-live-chat-moderator-color,#5e84f1);
+  --nnryv-name-member: var(--yt-live-chat-sponsor-color);
+  --nnryv-timestamp-display-relative: inline;
+  --nnryv-timestamp-display-absolute: none;
+}

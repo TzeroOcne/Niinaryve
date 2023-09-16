@@ -1,27 +1,32 @@
 import webExtension from '@samrum/vite-plugin-web-extension';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { readdir, rm } from 'fs/promises';
 import minimist from 'minimist';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { build } from 'vite';
-
-const youtubeLivechatURLPattern = 'https://*.youtube.com/*';
-const youtubeURLPattern = 'https://*.youtube.com/*';
+import extensionConfig from './extension.config.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const sourceDir = path.resolve(__dirname, './src');
 const argv = minimist(process.argv.slice(2));
 
 const isWatch = argv?.w ?? argv?.watch ?? false;
+const rawOutDir = argv?.o ?? argv?.['out-dir'];
+
+const outDir = rawOutDir instanceof String ? rawOutDir.toString() : 'dist';
 
 /** @type {import('vite').BuildOptions} */
-const defaultBuildOptions = isWatch ?
-  {
-    watch: {
-      include: [ 'src/**' ],
-    },
-  } :
-  {};
+const defaultBuildOptions = {
+  outDir,
+  emptyOutDir: false,
+};
+
+if (isWatch) {
+  defaultBuildOptions.watch = {
+    include: [ 'src/**' ],
+  };
+}
 
 const defaultAlias = {
   '~': sourceDir,
@@ -32,6 +37,21 @@ const defaultAlias = {
 };
 
 const buildExtension = async () => {
+  /** @type {import('vite').BuildOptions} */
+  const extensionBuidOptions = {};
+
+  if (isWatch) {
+    extensionBuidOptions.watch = {
+      include: [
+        'src/**',
+        'extension.config.js',
+      ],
+      exclude: [
+        'src/resources/**',
+      ],
+    };
+  }
+
   await build({
     configFile: false,
     plugins: [
@@ -40,50 +60,14 @@ const buildExtension = async () => {
           customElement: true,
         },
       }),
-      webExtension({
-        manifest: {
-          name: 'niinaryve',
-          manifest_version: 3,
-          version: '2.0.0',
-          permissions: [
-            'storage',
-          ],
-          action: {
-            default_popup: 'index.html',
-          },
-          content_scripts: [
-            {
-              run_at: 'document_start',
-              js: [
-                'src/scripts/content-scripts.ts',
-              ],
-              matches: [
-                youtubeLivechatURLPattern,
-              ],
-              all_frames: true,
-            },
-          ],
-          web_accessible_resources: [
-            {
-              matches: [ youtubeURLPattern ],
-              resources: [
-                'src/resources/injected.js',
-                'src/resources/custom-elements.js',
-              ],
-            },
-          ],
-        },
-        additionalInputs: {
-          scripts: [
-          ],
-        },
-      }),
+      webExtension(extensionConfig),
     ],
     resolve: {
       alias: defaultAlias,
     },
     build: {
       ...(defaultBuildOptions),
+      ...(extensionBuidOptions),
     },
   });
 };
@@ -93,6 +77,18 @@ const buildExtension = async () => {
  * @param {string} input
  */
 const buildSingleEntry = async (name,input) => {
+  /** @type {import('vite').BuildOptions} */
+  const resourcesBuidOptions = {};
+
+  if (isWatch) {
+    resourcesBuidOptions.watch = {
+      include: [
+        path.posix.join(path.posix.dirname(input), '**'),
+      ],
+    };
+  }
+  console.log(resourcesBuidOptions);
+
   await build({
     plugins: [
       svelte({
@@ -107,12 +103,16 @@ const buildSingleEntry = async (name,input) => {
     },
     build: {
       ...(defaultBuildOptions),
-      emptyOutDir: false,
+      ...(resourcesBuidOptions),
       rollupOptions: {
         input: {
           [name]: input,
         },
         output: {
+          assetFileNames() {
+            return path.posix.join(path.dirname(name ?? ''), '[name][extname]');
+          },
+          manualChunks: () => '',
           entryFileNames: '[name].js',
         },
       },
@@ -121,15 +121,18 @@ const buildSingleEntry = async (name,input) => {
 };
 
 const buildPackages = async () => {
+  for (const file of await readdir(outDir)) {
+    await rm(path.join(outDir, file), { recursive: true });
+  }
   await buildExtension();
   await buildSingleEntry(
-    'src/resources/injected',
-    'src/resources/injected.ts',
+    'src/resources/injected/injected',
+    'src/resources/injected/injected.ts',
   );
-  await buildSingleEntry(
-    'src/resources/custom-elements',
-    'src/resources/custom-elements.ts',
-  );
+  // await buildSingleEntry(
+  //   'src/resources/custom-elements',
+  //   'src/resources/custom-elements.ts',
+  // );
 };
 
 buildPackages();

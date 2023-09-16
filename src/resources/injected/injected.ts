@@ -1,12 +1,16 @@
 import { APP_ID, PREFIX } from '$lib/app/app';
 import { waitForElm } from '$lib/document';
 import type { Actions, AuthorBadgeObject, AuthorPhoto, AuthorSummary, BadgeType, LiveChatData, ReplayChatItemAction, Thumbnail } from '@types';
+import ChatName from './ChatName.svelte';
+import ChatTimestamp from './ChatTimestamp.svelte';
+import './injected.css';
 
 const { fetch: originalFetch } = window;
 let appContainer:HTMLDivElement;
 const memberRegex = /member/i;
 const moderatorRegex = /moderator/i;
 const verfiedRegex = /verified/i;
+const markedList:Record<string,boolean> = {};
 
 const isBadge = (badges:AuthorBadgeObject[] = [], regex:RegExp):boolean => {
   if (badges.length === 0) {
@@ -37,25 +41,30 @@ const removeNameDup = async () => {
   for (const nameDup of document.querySelectorAll('.nnryv-verifier ~ .nnryv-verifier')) {
     nameDup.remove();
   }
+  for (const nameDup of document.querySelectorAll('.nnryv-chat-usernaem ~ .nnryv-chat-username')) {
+    nameDup.remove();
+  }
 };
 
 const modifyNameDisplay = async (id:string, channelId:string, badges:BadgeType[], type?: 'init') => {
   const nameContainer = await waitForElm(`[id="${id}"] span#author-name:not(.nnryv-marked)`);
   if (!nameContainer) return;
   nameContainer.classList.add('nnryv-marked');
-  const anchor = document.createElement('a') as HTMLAnchorElement;
-  anchor.href = `/channel/${channelId}`;
-  anchor.innerText = nameContainer.textContent ?? '';
-  const coloredName = document.createElement('span');
-  coloredName.appendChild(anchor);
-  coloredName.classList.add('nnryv-verifier');
-  for (const badge of badges) {
-    coloredName.classList.add(badge);
-  }
+  const rawName = nameContainer?.textContent ?? '';
   for (const child of nameContainer.childNodes) {
     nameContainer.removeChild(child);
   }
-  nameContainer.appendChild(coloredName);
+
+  new ChatName({
+    target: nameContainer,
+    props: {
+      label: rawName,
+      link: `/channel/${channelId}`,
+      isMember: badges.includes('member'),
+      isModerator: badges.includes('moderator'),
+      isVerified: badges.includes('verified'),
+    },
+  });
   setTimeout(removeNameDup, 0);
   if (type) {
     // Do something
@@ -66,20 +75,21 @@ const modifyTimestamp = async (id:string, timestamp:number, type?: 'init') => {
   const timestampContainer = await waitForElm(`[id="${id}"] span#timestamp:not(.nnryv-marked)`) as HTMLSpanElement;
   if (!timestampContainer) return;
   timestampContainer.classList.add('nnryv-marked');
+  const original = timestampContainer?.innerText?.toString() ?? '';
   const chatTimestamp = new Date(timestamp);
-  const timestampRelative = document.createElement('span') as HTMLSpanElement;
-  timestampRelative.id = 'timestamp-relative';
-  timestampRelative.innerText = timestampContainer.innerText;
-  const timestampAbsolute = document.createElement('span') as HTMLSpanElement;
-  timestampAbsolute.id = 'timestamp-absolute-local';
   const hour = chatTimestamp.getHours().toString();
   const minute = chatTimestamp.getMinutes().toString();
-  timestampAbsolute.innerText = `${hour}:${minute.padStart(2, '0')}`;
+  const absolute = `${hour}:${minute.padStart(2, '0')}`;
   for (const child of timestampContainer.childNodes) {
     timestampContainer.removeChild(child);
   }
-  timestampContainer.appendChild(timestampRelative);
-  timestampContainer.appendChild(timestampAbsolute);
+  new ChatTimestamp({
+    target: timestampContainer,
+    props: {
+      original,
+      absolute,
+    },
+  });
   if (type) {
     // Do something
   }
@@ -170,6 +180,8 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
     appContainer.dispatchEvent(new CustomEvent('livechat', {detail: authorList}));
   }
   for (const { id, authorExternalChannelId, badgeList, timestamp } of authorList) {
+    if (markedList[id ?? '']) continue;
+    markedList[id ?? ''] = true;
     modifyNameDisplay(id ?? '', authorExternalChannelId ?? '', badgeList ?? [], type);
     modifyTimestamp(id ?? '', timestamp ?? 0, type);
   }
