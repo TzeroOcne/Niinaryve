@@ -173,7 +173,6 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
         authorName, authorExternalChannelId, id, authorBadges,
         authorPhoto, timestampUsec,
       } = renderer;
-      console.log(authorBadges);
       const photo = (authorPhoto) ? getBiggestPhoto(authorPhoto) : undefined;
       const badgeImg = getBiggestBadge(authorBadges);
       const badgeList = (authorBadges) ? getBadgeList(authorBadges) : undefined;
