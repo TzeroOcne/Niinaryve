@@ -7,7 +7,7 @@ import './injected.css';
 
 const { fetch: originalFetch } = window;
 let appContainer:HTMLDivElement;
-const memberRegex = /member/i;
+const memberRegex = /(member|pelanggan)/i;
 const moderatorRegex = /moderator/i;
 const verfiedRegex = /verified/i;
 const markedList:Record<string,boolean> = {};
@@ -173,7 +173,7 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
         authorName, authorExternalChannelId, id, authorBadges,
         authorPhoto, timestampUsec,
       } = renderer;
-
+      console.log(authorBadges);
       const photo = (authorPhoto) ? getBiggestPhoto(authorPhoto) : undefined;
       const badgeImg = getBiggestBadge(authorBadges);
       const badgeList = (authorBadges) ? getBadgeList(authorBadges) : undefined;

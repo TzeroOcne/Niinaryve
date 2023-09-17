@@ -19,6 +19,9 @@ export default {
       '48': 'assets/icons/stripe-white-lined-boxed-48.png',
       '128': 'assets/icons/stripe-white-lined-boxed-128.png',
     },
+    content_security_policy: {
+      extension_pages: 'script-src \'self\' ; object-src \'self\';',
+    },
     action: {
       default_popup: 'index.html',
     },
