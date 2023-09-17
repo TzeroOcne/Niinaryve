@@ -1,5 +1,5 @@
-import ChatName from '$components/ChatName.svelte';
-import { PREFIX } from '$lib/app/app';
+import { PREFIX } from '$lib/extension/global';
+import ChatName from 'src/resources/injected/ChatName.svelte';
 import type { ComponentType } from 'svelte';
 
 const defineCustomElement = ({ element }:ComponentType, options?:ElementDefinitionOptions) => {

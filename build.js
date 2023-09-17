@@ -1,5 +1,7 @@
 import webExtension from '@samrum/vite-plugin-web-extension';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { existsSync, mkdirSync } from 'fs';
+import { copy } from 'fs-extra';
 import { readdir, rm } from 'fs/promises';
 import minimist from 'minimist';
 import path from 'path';
@@ -31,6 +33,7 @@ if (isWatch) {
 const defaultAlias = {
   '~': sourceDir,
   '$lib': path.resolve(sourceDir, 'lib'),
+  '$assets': path.resolve(sourceDir, 'assets'),
   '$components': path.resolve(sourceDir, 'components'),
   '@types': path.resolve(__dirname, '@types', 'index.ts'),
   '@consts': path.resolve(__dirname, '@consts', 'index.ts'),
@@ -87,7 +90,6 @@ const buildSingleEntry = async (name,input) => {
       ],
     };
   }
-  console.log(resourcesBuidOptions);
 
   await build({
     plugins: [
@@ -124,10 +126,22 @@ const buildPackages = async () => {
   for (const file of await readdir(outDir)) {
     await rm(path.join(outDir, file), { recursive: true });
   }
+  if (!existsSync('dist')) {
+    mkdirSync('dist');
+  }
+  await copy('assets/icons', 'dist/assets/icons');
   await buildExtension();
   await buildSingleEntry(
     'src/resources/injected/injected',
     'src/resources/injected/injected.ts',
+  );
+  await buildSingleEntry(
+    'src/resources/app/app',
+    'src/resources/app/app.ts',
+  );
+  await buildSingleEntry(
+    'src/resources/chatter/chatter',
+    'src/resources/chatter/chatter.ts',
   );
   // await buildSingleEntry(
   //   'src/resources/custom-elements',

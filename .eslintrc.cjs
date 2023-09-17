@@ -3,6 +3,11 @@ module.exports = {
     'browser': true,
     'es2024': true,
     'node': true,
+    'webextensions': true,
+  },
+  'globals': {
+    'NodeJS': true,
+    'NodeListOf': true,
   },
   'extends': [
     'eslint:recommended',

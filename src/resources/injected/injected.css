@@ -4,4 +4,40 @@ html {
   --nnryv-name-member: var(--yt-live-chat-sponsor-color);
   --nnryv-timestamp-display-relative: inline;
   --nnryv-timestamp-display-absolute: none;
+  --nnryv-chat-display-chatter: flex;
+  --nnryv-chat-display-member: flex;
+  --nnryv-chat-display-moderator: flex;
+  --nnryv-chat-display-memmod: flex;
+}
+
+html.nnryv-chat-hide-chatter {
+  --nnryv-chat-display-chatter: none;
+}
+
+html.nnryv-chat-hide-member {
+  --nnryv-chat-display-member: none;
+}
+
+html.nnryv-chat-hide-moderator {
+  --nnryv-chat-display-moderator: none;
+}
+
+html.nnryv-chat-hide-member.nnryv-chat-hide-moderator {
+  --nnryv-chat-display-memmod: none;
+}
+
+html yt-live-chat-text-message-renderer[data-badge-chatter] {
+  display: var(--nnryv-chat-display-chatter);
+}
+
+html yt-live-chat-text-message-renderer[data-badge-member] {
+  display: var(--nnryv-chat-display-member);
+}
+
+html yt-live-chat-text-message-renderer[data-badge-moderator] {
+  display: var(--nnryv-chat-display-moderator);
+}
+
+html yt-live-chat-text-message-renderer[data-badge-moderator][data-badge-member] {
+  display: var(--nnryv-chat-display-memmod);
 }

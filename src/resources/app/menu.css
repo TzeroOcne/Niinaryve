@@ -1,0 +1,61 @@
+@tailwind components;
+
+@layer components {
+  #app-container div#menu-container>* {
+    @apply join-item w-full text-left justify-start items-center rounded-none;
+  }
+
+  #app-container div#menu-container summary.btn {
+    @apply rounded-b-2xl overflow-hidden;
+  }
+
+  #app-container div#menu-container ul#dropdown-content-container {
+    @apply w-max h-fit items-start;
+  }
+
+  #app-container div#menu-container li {
+    @apply h-16 flex justify-center items-start w-full content-between;
+  }
+
+  #app-container div#menu-container li>* {
+    @apply p-4 w-full;
+  }
+
+  #app-container div#menu-container button#menu-button {
+    @apply btn p-4 m-0 outline-none content-center rounded-none w-full;
+    font-size: 12px;
+    line-height: 12px;
+  }
+
+  #app-container div#menu-container button#menu-button>span {
+    @apply flex items-center w-full;
+  }
+
+  #app-container div#menu-container ul button#menu-button>span {
+    @apply justify-between;
+  }
+
+  #app-container div#menu-container li label {
+    @apply flex-grow;
+  }
+
+  #app-container div#menu-container li input {
+    @apply text-base-content bg-base-content;
+  }
+
+  #app-container div#menu-container #menu-item>* {
+    @apply flex h-full items-center p-0 m-0 border-0;
+  }
+
+  #app-container div#menu-container>*#menu-button:first-child {
+    @apply rounded-t-2xl;
+  }
+
+  #app-container div#menu-container>*#menu-button:last-child {
+    @apply rounded-b-2xl;
+  }
+
+  #app-container div#menu-container:not(.show) {
+    @apply hidden;
+  }
+}

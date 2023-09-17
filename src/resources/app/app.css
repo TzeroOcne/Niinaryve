@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+img {
+  display: unset;
+}
+
+#nnryv-app div#button-container button>svg {
+  @apply min-h-[16px] relative;
+}
+
+#nnryv-app #menu-container #menu-item #item-icon {
+  @apply mr-4;
+}
+

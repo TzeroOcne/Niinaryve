@@ -1,5 +1,5 @@
-import { APP_ID, PREFIX } from '$lib/app/app';
 import { waitForElm } from '$lib/document';
+import { APP_ID, PREFIX } from '$lib/extension/global';
 import type { Actions, AuthorBadgeObject, AuthorPhoto, AuthorSummary, BadgeType, LiveChatData, ReplayChatItemAction, Thumbnail } from '@types';
 import ChatName from './ChatName.svelte';
 import ChatTimestamp from './ChatTimestamp.svelte';
@@ -46,9 +46,19 @@ const removeNameDup = async () => {
   }
 };
 
+const modifyChatContainer = async (id:string, channelId: string, badges:BadgeType[]) => {
+  const chatContainer = await waitForElm(`yt-live-chat-text-message-renderer[id="${id}"]`);
+  chatContainer.setAttribute('data-channel-id', channelId);
+  if (!badges.includes('member') && !badges.includes('moderator'))
+    chatContainer.setAttribute('data-badge-chatter', 'true');
+  if (badges.includes('member'))
+    chatContainer.setAttribute('data-badge-member', 'true');
+  if (badges.includes('moderator'))
+    chatContainer.setAttribute('data-badge-moderator', 'true');
+};
+
 const modifyNameDisplay = async (id:string, channelId:string, badges:BadgeType[], type?: 'init') => {
   const nameContainer = await waitForElm(`[id="${id}"] span#author-name:not(.nnryv-marked)`);
-  if (!nameContainer) return;
   nameContainer.classList.add('nnryv-marked');
   const rawName = nameContainer?.textContent ?? '';
   for (const child of nameContainer.childNodes) {
@@ -59,6 +69,7 @@ const modifyNameDisplay = async (id:string, channelId:string, badges:BadgeType[]
     target: nameContainer,
     props: {
       label: rawName,
+      channelId,
       link: `/channel/${channelId}`,
       isMember: badges.includes('member'),
       isModerator: badges.includes('moderator'),
@@ -73,7 +84,6 @@ const modifyNameDisplay = async (id:string, channelId:string, badges:BadgeType[]
 
 const modifyTimestamp = async (id:string, timestamp:number, type?: 'init') => {
   const timestampContainer = await waitForElm(`[id="${id}"] span#timestamp:not(.nnryv-marked)`) as HTMLSpanElement;
-  if (!timestampContainer) return;
   timestampContainer.classList.add('nnryv-marked');
   const original = timestampContainer?.innerText?.toString() ?? '';
   const chatTimestamp = new Date(timestamp);
@@ -177,11 +187,12 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
     if (type) {
       console.log(`${PREFIX} Dispatching chat init event`);
     }
-    appContainer.dispatchEvent(new CustomEvent('livechat', {detail: authorList}));
+    document.dispatchEvent(new CustomEvent('nnryv-livechat', {detail: authorList}));
   }
   for (const { id, authorExternalChannelId, badgeList, timestamp } of authorList) {
     if (markedList[id ?? '']) continue;
     markedList[id ?? ''] = true;
+    modifyChatContainer(id ?? '', authorExternalChannelId ?? '' , badgeList ?? []);
     modifyNameDisplay(id ?? '', authorExternalChannelId ?? '', badgeList ?? [], type);
     modifyTimestamp(id ?? '', timestamp ?? 0, type);
   }

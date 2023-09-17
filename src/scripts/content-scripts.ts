@@ -1,21 +1,33 @@
-import { APP_ID, PREFIX, getChatApp } from '$lib/app/app';
-import { waitForElm } from '$lib/document';
+import { changeProperty } from '$lib/document';
+import { APP_ID, PREFIX, addIdentifier, getChatApp } from '$lib/extension/global';
+import { getStoreStyleValue } from '$lib/extension/storage';
+import { StyleDefaultValue, StyleVarNameList } from '@consts';
 
 console.log(`${PREFIX} extension loaded`);
 
-const injectedIdentifier = 'nnryv-injected';
-const addIdentifier = (target:HTMLElement) => target.classList.add(injectedIdentifier);
+const injectStyle = (source:string, head:HTMLHeadElement = document.head) => {
+  const element = document.createElement('link');
+  element.rel = 'stylesheet';
+  element.href = source;
+  addIdentifier(element);
+  head.prepend(element);
+};
+
+const injectScript = (source:string, head:HTMLHeadElement = document.head) => {
+  const element = document.createElement('script');
+  element.src = source;
+  element.type = 'module';
+  element.setAttribute('extension_origin', source);
+  addIdentifier(element);
+  head.appendChild(element);
+};
 
 export const injectApp = async () => {
   document.addEventListener('DOMContentLoaded', async () => {
     const root = document.querySelector(':root') as HTMLElement;
-    console.log(1);
 
     const chatApp = await getChatApp(root);
     console.log(`${PREFIX} Chat app found`);
-
-    const chatDocument = chatApp.ownerDocument;
-    const head = chatDocument.head || chatDocument.documentElement;
 
     const appContainer = document.createElement('div');
     appContainer.id = APP_ID;
@@ -23,42 +35,34 @@ export const injectApp = async () => {
     addIdentifier(appContainer);
     chatApp.appendChild(appContainer);
 
-    const injectedCSSUrl = chrome.runtime.getURL('src/resources/injected/injected.css');
-    const injectedStyle = document.createElement('link');
-    injectedStyle.rel = 'stylesheet';
-    injectedStyle.href = injectedCSSUrl;
-    addIdentifier(injectedStyle);
-    head.prepend(injectedStyle);
+    injectStyle(chrome.runtime.getURL('src/resources/chatter/chatter.css'));
+    injectScript(chrome.runtime.getURL('src/resources/chatter/chatter.js'));
 
-    // const customElementJSURL = chrome.runtime.getURL('src/resources/custom-elements.js');
-    // const customElementScript = document.createElement('script');
-    // customElementScript.src = customElementJSURL;
-    // customElementScript.type = 'module';
-    // customElementScript.setAttribute('extension_origin', customElementJSURL);
-    // addIdentifier(customElementScript);
-    // head.appendChild(customElementScript);
-    waitForElm('yt-live-chat-button', chatApp).then(async (buttonMenu:HTMLElement) => {
-      const appMenu = document.createElement('div') as HTMLDivElement;
-      appMenu.id = 'nnryv-app-menu';
-      addIdentifier(appMenu);
-      buttonMenu?.parentNode?.insertBefore(appMenu, buttonMenu);
+    injectStyle(chrome.runtime.getURL('src/resources/app/app.css'));
+    injectScript(chrome.runtime.getURL('src/resources/app/app.js'));
 
-      // const openScript = document.createElement('script') as HTMLScriptElement;
-      // openScript.src = openJSUrl;
-      // openScript.type = 'module';
-      // openScript.setAttribute('extension_origin', openJSUrl);
-      // addIdentifier(openScript);
-      // head.appendChild(openScript);
+    injectStyle(chrome.runtime.getURL('src/resources/injected/injected.css'));
+    injectScript(chrome.runtime.getURL('src/resources/injected/injected.js'));
+
+    console.log(`${PREFIX} Done injecting script`);
+
+    console.log(`${PREFIX} Loading color`);
+    for (const name of StyleVarNameList) {
+      const value = await getStoreStyleValue(name);
+      if (value) {
+        changeProperty(root, name, value);
+      }
+    }
+
+    console.log(`${PREFIX} Listen to config change`);
+    chrome.storage.onChanged.addListener((changes) => {
+      for (const name of StyleVarNameList) {
+        if (!changes[name]) continue;
+        changeProperty(root, name,
+          changes[name].newValue ?? StyleDefaultValue[name],
+        );
+      }
     });
-
-
-    const injectedJSURL = chrome.runtime.getURL('src/resources/injected/injected.js');
-    const injectedScript = document.createElement('script');
-    injectedScript.src = injectedJSURL;
-    injectedScript.type = 'module';
-    injectedScript.setAttribute('extension_origin', injectedJSURL);
-    addIdentifier(injectedScript);
-    head.appendChild(injectedScript);
   });
 };
 

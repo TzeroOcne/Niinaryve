@@ -1,10 +1,13 @@
 <script lang="ts">
-  import { getStoreValue, store } from '$lib/extension/storage';
+  import { getStoreStyleValue, store } from '$lib/extension/storage';
   import { DefaultAppConfig } from '@consts';
   import { faArrowRotateLeft } from '@fortawesome/free-solid-svg-icons';
   import type { AppConfig } from '@types';
   import Fa from 'svelte-fa';
-  import './app.css';
+  import './extension.css';
+
+  let initialized = false;
+  let timerId:NodeJS.Timeout;
 
   const appConfig:AppConfig = {
     ...(DefaultAppConfig),
@@ -17,16 +20,21 @@
   };
 
   const configLoader = (async () => {
-    const storedConfig = await getStoreValue('config');
-    for (const key in appConfig) {
-      appConfig[key] = storedConfig[key] ?? appConfig[key];
-    }
+    appConfig.baseColor = await getStoreStyleValue('nnryv-name-base') ?? appConfig.baseColor;
+    appConfig.memberColor = await getStoreStyleValue('nnryv-name-member') ?? appConfig.memberColor;
+    appConfig.adminColor = await getStoreStyleValue('nnryv-name-moderator') ?? appConfig.adminColor;
+    initialized = true;
   })();
 
-  $: {
-    store({
-      config: appConfig,
-    });
+  $: if (initialized) {
+    clearTimeout(timerId);
+    timerId = setTimeout(() => {
+      store({
+        'nnryv-name-base': appConfig.baseColor,
+        'nnryv-name-member': appConfig.memberColor,
+        'nnryv-name-moderator': appConfig.adminColor,
+      });
+    }, 400);
   }
 </script>
 

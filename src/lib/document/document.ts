@@ -1,6 +1,8 @@
-export function waitForElm<
+export const getRoot = () => document.querySelector(':root') as HTMLElement;
+
+export const waitForElm = <
   R extends Element = HTMLElement,
->(selector:string, parentTarget?:Element) {
+>(selector:string, parentTarget?:Element) => {
   const target = parentTarget ?? document.body;
   return new Promise<R>(resolve => {
     const selected = target.querySelector(selector) as R;
@@ -21,4 +23,8 @@ export function waitForElm<
       subtree: true,
     });
   });
-}
+};
+
+export const changeProperty = (target:HTMLElement, name:string, value:string) => {
+  target.style.setProperty(`--${name}`, value);
+};

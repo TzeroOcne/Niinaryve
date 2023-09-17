@@ -1,8 +1,11 @@
-import './app.css';
-import App from './App.svelte';
+import { waitForElm } from '$lib/document';
+import './extension.css';
+import Popout from './Popout.svelte';
 
-const app = new App({
-  target: document.getElementById('app'),
+waitForElm('#app').then((selected) => {
+  new Popout({
+    target: selected,
+  });
 });
 
-export default app;
+export default {};

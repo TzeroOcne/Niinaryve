@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+img {
+  display: unset;
+}
+
+#nnryv-chatter:not(.show) {
+  display: none;
+}
+
+#nnryv-chatter #chatter-user-container {
+  @apply bg-base-200 flex justify-start items-center p-4 font-bold;
+}
+
+#nnryv-chatter #chatter-user-container:nth-child(2n) {
+  @apply bg-base-300;
+}

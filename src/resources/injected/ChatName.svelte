@@ -4,6 +4,7 @@
 
 <script lang="ts">
   export let link:string;
+  export let channelId:string;
   export let label:string;
   export let isMember = false;
   export let isModerator = false;
@@ -12,6 +13,7 @@
 
 <span class:member={isMember} class:moderator={isModerator} class:verified={isVerified}
   class="nnryv-chat-username"
+  data-channel-id={channelId}
 >
   <a href={link} class="nnry">
     {label}

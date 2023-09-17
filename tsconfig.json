@@ -17,6 +17,7 @@
     "baseUrl": ".",
     "paths": {
       "$lib/*": [ "src/lib/*" ],
+      "$assets/*": [ "src/assets/*" ],
       "$components/*": [ "src/components/*" ],
       "@types": [ "@types/index.ts" ],
       "@consts": [ "@consts/index.ts" ],
