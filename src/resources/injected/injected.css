@@ -10,19 +10,19 @@ html {
   --nnryv-chat-display-memmod: flex;
 }
 
-html.nnryv-chat-hide-chatter {
+html .nnryv-chat-hide-chatter {
   --nnryv-chat-display-chatter: none;
 }
 
-html.nnryv-chat-hide-member {
+html .nnryv-chat-hide-member {
   --nnryv-chat-display-member: none;
 }
 
-html.nnryv-chat-hide-moderator {
+html .nnryv-chat-hide-moderator {
   --nnryv-chat-display-moderator: none;
 }
 
-html.nnryv-chat-hide-member.nnryv-chat-hide-moderator {
+html .nnryv-chat-hide-member.nnryv-chat-hide-moderator {
   --nnryv-chat-display-memmod: none;
 }
 

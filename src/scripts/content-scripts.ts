@@ -1,4 +1,4 @@
-import { changeProperty } from '$lib/document';
+import { changeProperty, listenDocumentEvent } from '$lib/document';
 import { APP_ID, PREFIX, addIdentifier, getChatApp } from '$lib/extension/global';
 import { getStoreStyleValue } from '$lib/extension/storage';
 import { StyleDefaultValue, StyleVarNameList } from '@consts';
@@ -53,6 +53,14 @@ export const injectApp = async () => {
         changeProperty(root, name, value);
       }
     }
+    listenDocumentEvent('nnryv-toggle-display-chat', (event) => {
+      const { name, show } = event.detail;
+      if (show) {
+        chatApp.classList.remove(name);
+      } else {
+        chatApp.classList.add(name);
+      }
+    });
 
     console.log(`${PREFIX} Listen to config change`);
     chrome.storage.onChanged.addListener((changes) => {

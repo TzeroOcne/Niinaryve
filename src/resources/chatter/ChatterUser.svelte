@@ -16,6 +16,9 @@
 {#if author?.authorName?.simpleText}
 <div id="chatter-user-container"
   class="h-12"
+  class:member={author?.badgeList?.includes('member') ?? false}
+  class:moderator={author?.badgeList?.includes('moderator') ?? false}
+  class:verified={author?.badgeList?.includes('verified') ?? false}
 >
   <div class="avatar mr-4">
     <div class="w-8 rounded-full">
@@ -51,6 +54,7 @@
   span a {
     text-decoration: none;
     color: inherit;
+    font-size: 12px;
   }
 
   span.moderator {

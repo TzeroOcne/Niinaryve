@@ -12,8 +12,21 @@ img {
 
 #nnryv-chatter #chatter-user-container {
   @apply bg-base-200 flex justify-start items-center p-4 font-bold;
+  display: var(--nnryv-chat-display-chatter);
 }
 
 #nnryv-chatter #chatter-user-container:nth-child(2n) {
   @apply bg-base-300;
+}
+
+#nnryv-chatter #chatter-user-container.moderator {
+  display: var(--nnryv-chat-display-moderator);
+}
+
+#nnryv-chatter #chatter-user-container.member {
+  display: var(--nnryv-chat-display-member);
+}
+
+#nnryv-chatter #chatter-user-container.member.moderator {
+  display: var(--nnryv-chat-display-memmod);
 }

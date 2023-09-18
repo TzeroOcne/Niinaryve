@@ -1,3 +1,5 @@
+import type { EventData, NNRYVCustomEvent, NNRYVEventListener, NNRYVEventName } from '@types';
+
 export const getRoot = () => document.querySelector(':root') as HTMLElement;
 
 export const waitForElm = <
@@ -13,8 +15,8 @@ export const waitForElm = <
     const observer = new MutationObserver(() => {
       const selected = target.querySelector(selector) as R;
       if (selected) {
-        resolve(selected);
         observer.disconnect();
+        resolve(selected);
       }
     });
 
@@ -28,3 +30,20 @@ export const waitForElm = <
 export const changeProperty = (target:HTMLElement, name:string, value:string) => {
   target.style.setProperty(`--${name}`, value);
 };
+
+export const dispatchDocumentEvent = <
+  EventType extends NNRYVEventName,
+  DetailType extends EventData<EventType> = EventData<EventType>,
+>(name:EventType, detail:DetailType) =>
+    document.dispatchEvent(new CustomEvent(name, {
+      detail,
+    }));
+
+export const listenDocumentEvent = <
+  EventName extends NNRYVEventName,
+  EventType extends NNRYVCustomEvent<EventName> = NNRYVCustomEvent<EventName>,
+  ListenerType extends NNRYVEventListener<EventName> = NNRYVEventListener<EventName>,
+>(name:EventName, listener:ListenerType) =>
+    document.addEventListener(name, (event) => {
+      listener(event as EventType);
+    });

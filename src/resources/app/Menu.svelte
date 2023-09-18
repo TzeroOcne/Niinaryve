@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { changeProperty, getRoot, onClickOutside } from '$lib/document';
+  import { changeProperty, dispatchDocumentEvent, getRoot, onClickOutside } from '$lib/document';
   import { faClock, faUser } from '@fortawesome/free-regular-svg-icons';
   import { faFilter } from '@fortawesome/free-solid-svg-icons';
   import Fa from 'svelte-fa';
@@ -31,7 +31,14 @@
   };
 
   const showChatterMenu = () => {
-    document.dispatchEvent(new CustomEvent('nnryv-chatter-show'));
+    dispatchDocumentEvent('nnryv-chatter-show', undefined);
+  };
+
+  const dispatchToggleDisplayChat = (name:string, show:boolean) => {
+    dispatchDocumentEvent('nnryv-toggle-display-chat', {
+      name,
+      show,
+    });
   };
 
   $: if (showOriginalTimestamp) {
@@ -44,23 +51,11 @@
 
   $: showMemmod = showMember || showModerator;
 
-  $: if (showChatter) {
-    root.classList.remove('nnryv-chat-hide-chatter');
-  } else {
-    root.classList.add('nnryv-chat-hide-chatter');
-  }
+  $: dispatchToggleDisplayChat('nnryv-chat-hide-chatter', showChatter);
 
-  $: if (showMember) {
-    root.classList.remove('nnryv-chat-hide-member');
-  } else {
-    root.classList.add('nnryv-chat-hide-member');
-  }
+  $: dispatchToggleDisplayChat('nnryv-chat-hide-member', showMember);
 
-  $: if (showModerator) {
-    root.classList.remove('nnryv-chat-hide-moderator');
-  } else {
-    root.classList.add('nnryv-chat-hide-moderator');
-  }
+  $: dispatchToggleDisplayChat('nnryv-chat-hide-moderator', showModerator);
 
   $: if (showMemmod) {
     root.classList.remove('nnryv-chat-hide-memmod');

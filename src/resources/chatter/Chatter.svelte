@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { listenDocumentEvent } from '$lib/document';
   import { PREFIX } from '$lib/extension/global';
   import { faX } from '@fortawesome/free-solid-svg-icons';
   import type { AuthorSummary } from '@types';
@@ -37,30 +38,28 @@
     messageList = newMessageList;
   });
 
-  document.addEventListener('nnryv-livechat', (event) => {
-    if (event instanceof CustomEvent) {
-      const authorList:AuthorSummary[] = event.detail;
-      for (const author of authorList) {
-        if (author?.authorExternalChannelId) {
-          chatterList[author.authorExternalChannelId] = author;
-        }
+  listenDocumentEvent('nnryv-livechat', (event) => {
+    const authorList:AuthorSummary[] = event.detail;
+    for (const author of authorList) {
+      if (author?.authorExternalChannelId) {
+        chatterList[author.authorExternalChannelId] = author;
       }
-      const newChatterList = [...Object.values(chatterList)];
-      newChatterList.sort(
-        (first, second) =>
-          first?.authorName?.simpleText?.localeCompare(
-            second?.authorName?.simpleText ?? '',
-          ) ?? 0,
-      );
-      sortedChatterList = newChatterList;
     }
+    const newChatterList = [...Object.values(chatterList)];
+    newChatterList.sort(
+      (first, second) =>
+        first?.authorName?.simpleText?.localeCompare(
+          second?.authorName?.simpleText ?? '',
+        ) ?? 0,
+    );
+    sortedChatterList = newChatterList;
   });
 
-  document.addEventListener('nnryv-chatter-show', () => {
+  listenDocumentEvent('nnryv-chatter-show', () => {
     show = true;
   });
 
-  document.addEventListener('nnryv-chatter-hide', () => {
+  listenDocumentEvent('nnryv-chatter-hide', () => {
     show = false;
   });
 </script>
@@ -102,7 +101,7 @@
       <div class="w-8 rounded-full mr-8">
         <img src={$selectedAuthor?.photo} alt="">
       </div>
-      <h3 class="font-bold text-lg">{$selectedAuthor?.authorName?.simpleText}</h3>
+      <h3 class="font-bold">{$selectedAuthor?.authorName?.simpleText}</h3>
     </div>
     <div class="max-h-[50vh] overflow-y-auto">
     {#each messageList as message}
@@ -121,4 +120,7 @@
 </dialog>
 
 <style>
+  dialog {
+    font-size: 16px;
+  }
 </style>

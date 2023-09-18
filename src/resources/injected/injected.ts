@@ -1,4 +1,4 @@
-import { waitForElm } from '$lib/document';
+import { dispatchDocumentEvent, waitForElm } from '$lib/document';
 import { APP_ID, PREFIX } from '$lib/extension/global';
 import type { Actions, AuthorBadgeObject, AuthorPhoto, AuthorSummary, BadgeType, LiveChatData, ReplayChatItemAction, Thumbnail } from '@types';
 import ChatName from './ChatName.svelte';
@@ -10,7 +10,7 @@ let appContainer:HTMLDivElement;
 const memberRegex = /(member|pelanggan)/i;
 const moderatorRegex = /moderator/i;
 const verfiedRegex = /verified/i;
-const markedList:Record<string,boolean> = {};
+const authorIdMap:Record<string,AuthorSummary> = {};
 
 const isBadge = (badges:AuthorBadgeObject[] = [], regex:RegExp):boolean => {
   if (badges.length === 0) {
@@ -48,6 +48,7 @@ const removeNameDup = async () => {
 
 const modifyChatContainer = async (id:string, channelId: string, badges:BadgeType[]) => {
   const chatContainer = await waitForElm(`yt-live-chat-text-message-renderer[id="${id}"]`);
+  chatContainer.setAttribute('data-nnryv-marked', 'true');
   chatContainer.setAttribute('data-channel-id', channelId);
   if (!badges.includes('member') && !badges.includes('moderator'))
     chatContainer.setAttribute('data-badge-chatter', 'true');
@@ -55,15 +56,14 @@ const modifyChatContainer = async (id:string, channelId: string, badges:BadgeTyp
     chatContainer.setAttribute('data-badge-member', 'true');
   if (badges.includes('moderator'))
     chatContainer.setAttribute('data-badge-moderator', 'true');
+  return await waitForElm(`yt-live-chat-text-message-renderer[id="${id}"][data-nnryv-marked]`);
 };
 
 const modifyNameDisplay = async (id:string, channelId:string, badges:BadgeType[], type?: 'init') => {
   const nameContainer = await waitForElm(`[id="${id}"] span#author-name:not(.nnryv-marked)`);
   nameContainer.classList.add('nnryv-marked');
   const rawName = nameContainer?.textContent ?? '';
-  for (const child of nameContainer.childNodes) {
-    nameContainer.removeChild(child);
-  }
+  nameContainer.innerHTML = '';
 
   new ChatName({
     target: nameContainer,
@@ -90,9 +90,8 @@ const modifyTimestamp = async (id:string, timestamp:number, type?: 'init') => {
   const hour = chatTimestamp.getHours().toString();
   const minute = chatTimestamp.getMinutes().toString();
   const absolute = `${hour}:${minute.padStart(2, '0')}`;
-  for (const child of timestampContainer.childNodes) {
-    timestampContainer.removeChild(child);
-  }
+  timestampContainer.innerHTML = '';
+
   new ChatTimestamp({
     target: timestampContainer,
     props: {
@@ -186,14 +185,11 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
     if (type) {
       console.log(`${PREFIX} Dispatching chat init event`);
     }
-    document.dispatchEvent(new CustomEvent('nnryv-livechat', {detail: authorList}));
+    dispatchDocumentEvent('nnryv-livechat', authorList);
   }
-  for (const { id, authorExternalChannelId, badgeList, timestamp } of authorList) {
-    if (markedList[id ?? '']) continue;
-    markedList[id ?? ''] = true;
-    modifyChatContainer(id ?? '', authorExternalChannelId ?? '' , badgeList ?? []);
-    modifyNameDisplay(id ?? '', authorExternalChannelId ?? '', badgeList ?? [], type);
-    modifyTimestamp(id ?? '', timestamp ?? 0, type);
+  for (const author of authorList) {
+    if (authorIdMap[author?.id ?? '']) continue;
+    authorIdMap[author?.id ?? ''] = author;
   }
 };
 
@@ -223,4 +219,19 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
     return response;
   };
   console.log(`${PREFIX} Done injecting fetch Capture`);
+
+  const chatContainer = await waitForElm('yt-live-chat-renderer div#chat div#item-list');
+
+  new MutationObserver(async () => {
+    const unmarkedList = document.querySelectorAll('yt-live-chat-text-message-renderer:not([data-nnryv-marked])');
+    for (const selected of unmarkedList) {
+      const author = authorIdMap[selected.id];
+      modifyChatContainer(selected.id, author?.authorExternalChannelId ?? '', author?.badgeList ?? []);
+      modifyNameDisplay(selected.id, author?.authorExternalChannelId ?? '', author?.badgeList ?? []);
+      modifyTimestamp(selected.id, author?.timestamp ?? 0);
+    }
+  }).observe(chatContainer, {
+    childList: true,
+    subtree: true,
+  });
 })();
