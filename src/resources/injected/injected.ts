@@ -46,8 +46,8 @@ const removeNameDup = async () => {
   }
 };
 
-const modifyChatContainer = async (id:string, channelId: string, badges:BadgeType[]) => {
-  const chatContainer = await waitForElm(`yt-live-chat-text-message-renderer[id="${id}"]`);
+const modifyChatContainer = async (target:string|HTMLElement, channelId: string, badges:BadgeType[]) => {
+  const chatContainer = (target instanceof HTMLElement) ? target : await waitForElm(`yt-live-chat-text-message-renderer[id="${target}"]`);
   chatContainer.setAttribute('data-nnryv-marked', 'true');
   chatContainer.setAttribute('data-channel-id', channelId);
   if (!badges.includes('member') && !badges.includes('moderator'))
@@ -56,11 +56,11 @@ const modifyChatContainer = async (id:string, channelId: string, badges:BadgeTyp
     chatContainer.setAttribute('data-badge-member', 'true');
   if (badges.includes('moderator'))
     chatContainer.setAttribute('data-badge-moderator', 'true');
-  return await waitForElm(`yt-live-chat-text-message-renderer[id="${id}"][data-nnryv-marked]`);
+  return await waitForElm(`yt-live-chat-text-message-renderer[id="${target}"][data-nnryv-marked]`);
 };
 
-const modifyNameDisplay = async (id:string, channelId:string, badges:BadgeType[], type?: 'init') => {
-  const nameContainer = await waitForElm(`[id="${id}"] span#author-name:not(.nnryv-marked)`);
+const modifyNameDisplay = async (target:string|HTMLElement, channelId:string, badges:BadgeType[], type?: 'init') => {
+  const nameContainer = (target instanceof HTMLElement) ? target : await waitForElm(`[id="${target}"] span#author-name:not(.nnryv-marked)`);
   nameContainer.classList.add('nnryv-marked');
   const rawName = nameContainer?.textContent ?? '';
   nameContainer.innerHTML = '';
@@ -82,8 +82,8 @@ const modifyNameDisplay = async (id:string, channelId:string, badges:BadgeType[]
   }
 };
 
-const modifyTimestamp = async (id:string, timestamp:number, type?: 'init') => {
-  const timestampContainer = await waitForElm(`[id="${id}"] span#timestamp:not(.nnryv-marked)`) as HTMLSpanElement;
+const modifyTimestamp = async (target:string|HTMLElement, timestamp:number, type?: 'init') => {
+  const timestampContainer = (target instanceof HTMLElement) ? target : await waitForElm(`[id="${target}"] span#timestamp:not(.nnryv-marked)`) as HTMLSpanElement;
   timestampContainer.classList.add('nnryv-marked');
   const original = timestampContainer?.innerText?.toString() ?? '';
   const chatTimestamp = new Date(timestamp);
@@ -225,10 +225,10 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
   const chatContainer = await waitForElm('yt-live-chat-renderer div#chat div#item-list');
 
   new MutationObserver(async () => {
-    const unmarkedList = document.querySelectorAll('yt-live-chat-item-list-renderer div#items>*:not([data-nnryv-marked])');
+    const unmarkedList:NodeListOf<HTMLElement> = document.querySelectorAll('yt-live-chat-item-list-renderer div#items>*:not([data-nnryv-marked])');
     for (const selected of unmarkedList) {
       const author = authorIdMap[selected.id];
-      modifyChatContainer(selected.id, author?.authorExternalChannelId ?? '', author?.badgeList ?? []);
+      modifyChatContainer(selected, author?.authorExternalChannelId ?? '', author?.badgeList ?? []);
       modifyNameDisplay(selected.id, author?.authorExternalChannelId ?? '', author?.badgeList ?? []);
       modifyTimestamp(selected.id, author?.timestamp ?? 0);
     }
