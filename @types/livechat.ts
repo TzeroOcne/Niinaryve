@@ -110,6 +110,8 @@ export interface Item {
   liveChatTextMessageRenderer?: LiveChatMessageRenderer;
   liveChatPaidMessageRenderer?: LiveChatMessageRenderer;
   liveChatTickerSponsorItemRenderer?: LiveChatMessageRenderer;
+  liveChatSponsorshipsGiftPurchaseAnnouncementRenderer?: LiveChatMessageRenderer;
+  liveChatSponsorshipsGiftRedemptionAnnouncementRenderer?: LiveChatMessageRenderer;
 }
 
 export interface InvalidationId {

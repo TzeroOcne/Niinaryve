@@ -161,6 +161,8 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
       const renderer =
         addChatItemAction?.item?.liveChatTextMessageRenderer ??
         addChatItemAction?.item?.liveChatPaidMessageRenderer ??
+        addChatItemAction?.item?.liveChatSponsorshipsGiftPurchaseAnnouncementRenderer ??
+        addChatItemAction?.item?.liveChatSponsorshipsGiftRedemptionAnnouncementRenderer ??
         addLiveChatTickerItemAction?.item?.liveChatTickerSponsorItemRenderer;
       return renderer && {
         renderer,
@@ -223,7 +225,7 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
   const chatContainer = await waitForElm('yt-live-chat-renderer div#chat div#item-list');
 
   new MutationObserver(async () => {
-    const unmarkedList = document.querySelectorAll('yt-live-chat-text-message-renderer:not([data-nnryv-marked])');
+    const unmarkedList = document.querySelectorAll('yt-live-chat-item-list-renderer div#items>*:not([data-nnryv-marked])');
     for (const selected of unmarkedList) {
       const author = authorIdMap[selected.id];
       modifyChatContainer(selected.id, author?.authorExternalChannelId ?? '', author?.badgeList ?? []);
