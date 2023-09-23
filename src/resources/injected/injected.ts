@@ -227,9 +227,7 @@ export const transformChat = async () => {
       resource.method === 'POST' &&
       resource.url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
       const responseClone = response.clone();
-      setTimeout(async () => {
-        await transformChatData(await responseClone.json());
-      }, 0);
+      await transformChatData(await responseClone.json());
     }
     return response;
   };
