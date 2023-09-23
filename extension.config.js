@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 
-const youtubeLivechatURLPattern = 'https://*.youtube.com/*';
+const youtubeLivechatURLPattern = 'https://*.youtube.com/live_chat*';
 const youtubeURLPattern = 'https://*.youtube.com/*';
 const publicKey = readFileSync('extension.public.key', 'utf-8');
 
