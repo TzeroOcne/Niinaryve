@@ -109,6 +109,7 @@ export interface LiveChatMessageRenderer {
 export interface Item {
   liveChatTextMessageRenderer?: LiveChatMessageRenderer;
   liveChatPaidMessageRenderer?: LiveChatMessageRenderer;
+  liveChatMembershipItemRenderer?: LiveChatMessageRenderer;
   liveChatTickerSponsorItemRenderer?: LiveChatMessageRenderer;
   liveChatSponsorshipsGiftPurchaseAnnouncementRenderer?: LiveChatMessageRenderer;
   liveChatSponsorshipsGiftRedemptionAnnouncementRenderer?: LiveChatMessageRenderer;

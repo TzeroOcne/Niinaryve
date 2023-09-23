@@ -161,6 +161,7 @@ const transformChatData = async (liveChatData:LiveChatData, type?:'init') => {
       const renderer =
         addChatItemAction?.item?.liveChatTextMessageRenderer ??
         addChatItemAction?.item?.liveChatPaidMessageRenderer ??
+        addChatItemAction?.item?.liveChatMembershipItemRenderer ??
         addChatItemAction?.item?.liveChatSponsorshipsGiftPurchaseAnnouncementRenderer ??
         addChatItemAction?.item?.liveChatSponsorshipsGiftRedemptionAnnouncementRenderer ??
         addLiveChatTickerItemAction?.item?.liveChatTickerSponsorItemRenderer;
@@ -190,7 +191,10 @@ const transformChatData = async (liveChatData:LiveChatData, type?:'init') => {
     dispatchDocumentEvent('nnryv-livechat', authorList);
   }
   for (const author of authorList) {
-    if (authorIdMap[author?.id ?? '']) continue;
+    if (authorIdMap[author?.id ?? '']) {
+      authorIdMap[author?.id ?? ''].authorBadges = author?.authorBadges;
+      continue;
+    }
     authorIdMap[author?.id ?? ''] = author;
   }
 };
