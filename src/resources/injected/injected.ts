@@ -147,7 +147,7 @@ const getBiggestBadge = (authorBadges:AuthorBadgeObject[] = []) => {
   return getBiggestThumbnail(filteredBagdes)?.url;
 };
 
-const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
+const transformChatData = async (liveChatData:LiveChatData, type?:'init') => {
   const content =
     liveChatData?.contents?.liveChatRenderer ??
     liveChatData?.continuationContents?.liveChatContinuation;
@@ -195,15 +195,24 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
   }
 };
 
+export const transformChat = async () => {
+  const unmarkedList:NodeListOf<HTMLElement> = document.querySelectorAll('yt-live-chat-item-list-renderer div#items>*:not([data-nnryv-marked])');
+  for (const selected of unmarkedList) {
+    const author = authorIdMap[selected.id];
+    modifyChatContainer(selected, author?.authorExternalChannelId ?? '', author?.badgeList ?? []);
+    modifyNameDisplay(selected.id, author?.authorExternalChannelId ?? '', author?.badgeList ?? []);
+    modifyTimestamp(selected.id, author?.timestamp ?? 0);
+  }
+};
+
 (async () => {
-  appContainer = await waitForElm(`div#${APP_ID}`) as HTMLDivElement;
   console.log(`${PREFIX} Modify Init`);
   waitForElm<HTMLScriptElement>('body>script:not([src])').then(async (scriptElement:HTMLScriptElement) => {
     const initialText = scriptElement.text;
-    const dataText = initialText.replace(/^(.*?) = /, '')
-      .replace(/;*$/, '');
+    const dataText = initialText.replace(/^[^{]*/, '').replace(/[^}]*$/, '');
     const initData:LiveChatData = JSON.parse(dataText);
-    modifyLiveChat(initData, 'init');
+    transformChatData(initData, 'init');
+    transformChat();
   });
 
   console.log(`${PREFIX} Injecting fetch Capture`);
@@ -215,7 +224,7 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
       resource.url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
       const responseClone = response.clone();
       setTimeout(async () => {
-        await modifyLiveChat(await responseClone.json());
+        await transformChatData(await responseClone.json());
       }, 0);
     }
     return response;
@@ -224,16 +233,9 @@ const modifyLiveChat = async (liveChatData:LiveChatData, type?:'init') => {
 
   const chatContainer = await waitForElm('yt-live-chat-renderer div#chat div#item-list');
 
-  new MutationObserver(async () => {
-    const unmarkedList:NodeListOf<HTMLElement> = document.querySelectorAll('yt-live-chat-item-list-renderer div#items>*:not([data-nnryv-marked])');
-    for (const selected of unmarkedList) {
-      const author = authorIdMap[selected.id];
-      modifyChatContainer(selected, author?.authorExternalChannelId ?? '', author?.badgeList ?? []);
-      modifyNameDisplay(selected.id, author?.authorExternalChannelId ?? '', author?.badgeList ?? []);
-      modifyTimestamp(selected.id, author?.timestamp ?? 0);
-    }
-  }).observe(chatContainer, {
+  new MutationObserver(transformChat).observe(chatContainer, {
     childList: true,
     subtree: true,
   });
+  appContainer = await waitForElm(`div#${APP_ID}`) as HTMLDivElement;
 })();

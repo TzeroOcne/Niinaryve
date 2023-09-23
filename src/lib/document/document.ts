@@ -2,6 +2,10 @@ import type { EventData, NNRYVCustomEvent, NNRYVEventListener, NNRYVEventName } 
 
 export const getRoot = () => document.querySelector(':root') as HTMLElement;
 
+export const getHead = () => {
+  return document.head;
+};
+
 export const waitForElm = <
   R extends Element = HTMLElement,
 >(selector:string, parentTarget?:Element) => {

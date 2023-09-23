@@ -9,7 +9,7 @@ export default {
   manifest: {
     name: 'Niinaryve',
     manifest_version: 3,
-    version: '2.1.0',
+    version: '2.1.2',
     permissions: [
       'storage',
     ],
@@ -27,7 +27,7 @@ export default {
     },
     content_scripts: [
       {
-        run_at: 'document_start',
+        run_at: 'document_end',
         js: [
           'src/scripts/content-scripts.ts',
         ],
@@ -39,7 +39,7 @@ export default {
     ],
     web_accessible_resources: [
       {
-        matches: [ youtubeURLPattern ],
+        matches: [youtubeURLPattern],
         resources: [
           'src/resources/injected/*',
           'src/resources/app/*',
