@@ -47,7 +47,8 @@ const removeNameDup = async () => {
 };
 
 const modifyChatContainer = async (target:string|HTMLElement, channelId: string, badges:BadgeType[]) => {
-  const chatContainer = (target instanceof HTMLElement) ? target : await waitForElm(`yt-live-chat-text-message-renderer[id="${target}"]`);
+  const chatContainer = (target instanceof HTMLElement) ? target : document.querySelector(`yt-live-chat-text-message-renderer[id="${target}"]`);
+  if (!chatContainer) return;
   chatContainer.setAttribute('data-nnryv-marked', 'true');
   chatContainer.setAttribute('data-channel-id', channelId);
   if (!badges.includes('member') && !badges.includes('moderator'))
@@ -60,7 +61,8 @@ const modifyChatContainer = async (target:string|HTMLElement, channelId: string,
 };
 
 const modifyNameDisplay = async (target:string|HTMLElement, channelId:string, badges:BadgeType[], type?: 'init') => {
-  const nameContainer = (target instanceof HTMLElement) ? target : await waitForElm(`[id="${target}"] span#author-name:not(.nnryv-marked)`);
+  const nameContainer = (target instanceof HTMLElement) ? target : document.querySelector(`[id="${target}"] span#author-name:not(.nnryv-marked)`);
+  if (!nameContainer) return;
   nameContainer.classList.add('nnryv-marked');
   const rawName = nameContainer?.textContent ?? '';
   nameContainer.innerHTML = '';
@@ -83,7 +85,8 @@ const modifyNameDisplay = async (target:string|HTMLElement, channelId:string, ba
 };
 
 const modifyTimestamp = async (target:string|HTMLElement, timestamp:number, type?: 'init') => {
-  const timestampContainer = (target instanceof HTMLElement) ? target : await waitForElm(`[id="${target}"] span#timestamp:not(.nnryv-marked)`) as HTMLSpanElement;
+  const timestampContainer = (target instanceof HTMLElement) ? target : document.querySelector(`[id="${target}"] span#timestamp:not(.nnryv-marked)`) as HTMLSpanElement;
+  if (!timestampContainer) return;
   timestampContainer.classList.add('nnryv-marked');
   const original = timestampContainer?.innerText?.toString() ?? '';
   const chatTimestamp = new Date(timestamp);
