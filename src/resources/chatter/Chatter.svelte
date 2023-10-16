@@ -24,10 +24,6 @@
     }, 400);
   }
 
-  $: {
-    filteredList = sortedChatterList.filter((value) => searchRegex.test(value?.authorName?.simpleText ?? ''));
-  }
-
   selectedAuthor.subscribe((value) => {
     const channelId = value?.authorExternalChannelId;
     const selector = `yt-live-chat-text-message-renderer[data-channel-id="${channelId}"] span#message`;
@@ -54,6 +50,10 @@
     );
     sortedChatterList = newChatterList;
   });
+
+  $: {
+    filteredList = sortedChatterList.filter((value) => searchRegex.test(value?.authorName?.simpleText ?? ''));
+  }
 
   listenDocumentEvent('nnryv-chatter-show', () => {
     show = true;
@@ -89,7 +89,7 @@
   </div>
   <div class="grow overflow-y-hidden">
     <div class="h-full overflow-y-auto">
-      {#each filteredList as author}
+      {#each filteredList as author (author.authorExternalChannelId)}
       <ChatterUser {...{author, selectedAuthor}} />
       {/each}
     </div>

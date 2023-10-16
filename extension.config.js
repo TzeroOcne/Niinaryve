@@ -9,7 +9,7 @@ export default {
   manifest: {
     name: 'Niinaryve',
     manifest_version: 3,
-    version: '2.1.4',
+    version: '2.1.6',
     permissions: [
       'storage',
     ],

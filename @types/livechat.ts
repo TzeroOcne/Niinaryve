@@ -99,7 +99,7 @@ export interface LiveChatMessageRenderer {
   contextMenuEndpoint?: ContextMenuEndpoint;
   id?: string;
   timestampUsec?: string;
-  authorExternalChannelId?: string;
+  authorExternalChannelId: string;
   contextMenuAccessibility?: ContextMenuAccessibility;
   authorBadges?: AuthorBadgeObject[];
   durationSec?: number;
@@ -204,7 +204,7 @@ export interface AuthorSummary {
   authorName?: {
       simpleText?: string;
   };
-  authorExternalChannelId?: string;
+  authorExternalChannelId: string;
   id?: string;
   authorBadges?: AuthorBadgeObject[];
   paid: boolean;

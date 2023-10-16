@@ -213,6 +213,9 @@ export const transformChat = async () => {
 };
 
 (async () => {
+  console.log(`${PREFIX} Waiting for app container`);
+  appContainer = await waitForElm(`div#${APP_ID}`) as HTMLDivElement;
+
   console.log(`${PREFIX} Modify Init`);
   waitForElm<HTMLScriptElement>('body>script:not([src])').then(async (scriptElement:HTMLScriptElement) => {
     const initialText = scriptElement.text;
@@ -242,5 +245,4 @@ export const transformChat = async () => {
     childList: true,
     subtree: true,
   });
-  appContainer = await waitForElm(`div#${APP_ID}`) as HTMLDivElement;
 })();
